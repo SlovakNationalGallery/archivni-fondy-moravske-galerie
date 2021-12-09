@@ -1,6 +1,6 @@
 <template>
     <div v-if="item">
-        {{ item.document.content.title }}
+        {{ item.document.content }}
     </div>
 </template>
 

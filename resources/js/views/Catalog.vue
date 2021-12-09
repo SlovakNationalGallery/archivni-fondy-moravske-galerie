@@ -1,6 +1,6 @@
 <template>
     <div v-for="(value, key) in query.filter" :key="key">
-        <facet v-model="query.filter[key]" :options="options[key]" :label="key" />
+        <facet v-model="query.filter[key]" :options="options[key]" :label="key" @update:modelValue="updateFilter" />
     </div>
 
     <div v-for="(item, i) in items" :key="i">
@@ -12,6 +12,7 @@
 <script>
 import Facet from '../components/Facet.vue'
 import axios from 'axios'
+import _ from 'lodash'
 
 export default {
     components: { Facet },
@@ -33,6 +34,14 @@ export default {
         }
     },
     created() {
+        this.query = _.merge(this.query, this.$route.query)
+        this.$watch('query', function (query) {
+            // force replace because query gets updated in current route
+            // therefore isSameRouteLocation returns true and route is not replaced
+            this.$router.replace({ query, force: true })
+        }, {
+            deep: true,
+        })
         this.fetchItems()
         this.fetchAggregations()
     },
@@ -50,10 +59,13 @@ export default {
                 }
             })
         },
+        filterParams(filter) {
+            const queryString = this.$router.options.stringifyQuery({ filter })
+            return new URLSearchParams(queryString)
+        },
         fetchAggregations() {
-            const params = new URLSearchParams({
-                size: 1000
-            })
+            const params = this.filterParams(this.query.filter)
+            params.set('size', 1000)
             const terms = ['part_of_1', 'part_of_2']
             terms.forEach(field => {
                 params.append(`terms[${field}]`, field)
@@ -65,6 +77,9 @@ export default {
                         this.options[facet] = options
                     })
                 })
+        },
+        updateFilter() {
+            this.fetchAggregations()
         },
         observerCallback(entries) {
             entries.forEach(entry => {
