@@ -20,11 +20,6 @@ class Item extends Model
     public static $sortables = [
     ];
 
-    public function searchableAs()
-    {
-        return sprintf('%sitems', config('elastic.prefix'));
-    }
-
     public static function filterQuery(array $filter, BoolQueryBuilder $builder = null)
     {
         $builder = $builder ?: new BoolQueryBuilder();
