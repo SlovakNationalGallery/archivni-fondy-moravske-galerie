@@ -1,7 +1,10 @@
 <?php
 
 use App\Models\Item;
+use ElasticAdapter\Search\Aggregation;
+use ElasticAdapter\Search\Bucket;
 use ElasticScoutDriverPlus\Exceptions\QueryBuilderException;
+use ElasticScoutDriverPlus\Support\Query;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -86,17 +89,20 @@ Route::get('items/aggregations', function (Request $request) {
     }
 
     $searchResult = $searchRequest->execute();
-    return response()->json($searchResult->aggregations());
+    return response()->json($searchResult->aggregations()->map(function (Aggregation $aggregation) {
+        return $aggregation->raw()['value'] ?? $aggregation->buckets()->mapWithKeys(function (Bucket $bucket) {
+            return [$bucket->key() => $bucket->docCount()];
+        });
+    }));
 });
 
 Route::get('items/{id}', function (Request $request, $id) {
-    $items = Item::idsSearch()
-        ->values([(string)$id])
-        ->execute();
+    $query = Query::ids()->values([(string)$id]);
+    $items = Item::searchQuery($query)->execute();
 
     if (!$items->total()) {
         abort(404);
     }
 
-    return response()->json($items->matches()->first());
+    return response()->json($items->hits()->first());
 });
