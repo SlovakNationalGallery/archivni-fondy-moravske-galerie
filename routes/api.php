@@ -1,7 +1,10 @@
 <?php
 
+use App\Models\Item;
+use ElasticScoutDriverPlus\Exceptions\QueryBuilderException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -16,4 +19,84 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::get('items', function (Request $request) {
+    $filter = (array)$request->get('filter');
+    $sort = (array)$request->get('sort');
+    $size = (int)$request->get('size', 1);
+
+    try {
+        $query = Item::filterQuery($filter)->buildQuery();
+    } catch (QueryBuilderException $e) {
+        $query = ['match_all' => new \stdClass];
+    }
+
+    $searchRequest = Item::searchQuery($query);
+
+    collect($sort)
+        ->only(Item::$sortables)
+        ->intersect(['asc', 'desc'])
+        ->each(function ($direction, $field) use ($searchRequest) {
+            $searchRequest->sort($field, $direction);
+        });
+
+    $items = $searchRequest->paginate($size);
+    return response()->json($items);
+});
+
+Route::get('items/aggregations', function (Request $request) {
+    $filter = (array)$request->get('filter');
+    $terms = (array)($request->get('terms'));
+    $min = (array)$request->get('min');
+    $max = (array)$request->get('max');
+    $size = (int)$request->get('size', 1);
+
+    try {
+        $query = Item::filterQuery($filter)->buildQuery();
+    } catch (QueryBuilderException $e) {
+        $query = ['match_all' => new \stdClass];
+    }
+
+    $searchRequest = Item::searchQuery($query);
+
+    foreach ($terms as $agg => $field) {
+        $searchRequest->aggregate($agg, [
+            'terms' => [
+                'field' => $field,
+                'size' => $size,
+            ]
+        ]);
+    }
+
+    foreach ($min as $agg => $field) {
+        $searchRequest->aggregate($agg, [
+            'min' => [
+                'field' => $field,
+            ]
+        ]);
+    }
+
+    foreach ($max as $agg => $field) {
+        $searchRequest->aggregate($agg, [
+            'max' => [
+                'field' => $field,
+            ]
+        ]);
+    }
+
+    $searchResult = $searchRequest->execute();
+    return response()->json($searchResult->aggregations());
+});
+
+Route::get('items/{id}', function (Request $request, $id) {
+    $items = Item::idsSearch()
+        ->values([(string)$id])
+        ->execute();
+
+    if (!$items->total()) {
+        abort(404);
+    }
+
+    return response()->json($items->matches()->first());
 });
