@@ -39,8 +39,7 @@ export default {
     methods: {
         facetUpdate(value, key) {
             const query = _.merge(this.$route.query, { filter: { [key]: value } })
-            this.$router.replace({ query })
-            this.update()
+            this.$router.replace({ query, force: true })
         },
         fetchItems() {
             const params = this.filterParams()
