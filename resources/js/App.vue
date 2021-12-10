@@ -1,4 +1,4 @@
 <template>
-    <h1>Archivní fondy Moravské galerie</h1>
+    <h1><router-link :to="{ name: 'catalog', query: {} }">Archivní fondy Moravské galerie</router-link></h1>
     <router-view />
 </template>

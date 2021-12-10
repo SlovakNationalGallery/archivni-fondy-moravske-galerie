@@ -1,6 +1,15 @@
 <template>
     <div v-if="item">
-        {{ item.document.content }}
+        <h2>{{ item.document.content.title }}</h2>
+
+        <p v-if="item.document.content.part_of_1">
+            part_of_1:
+            <router-link :to="{ name: 'catalog', query: { filter: { part_of_1: item.document.content.part_of_1 } } }">{{ item.document.content.part_of_1 }}</router-link>
+        </p>
+        <p v-if="item.document.content.part_of_2">
+            part_of_2:
+            <router-link :to="{ name: 'catalog', query: { filter: { part_of_2: item.document.content.part_of_2 } } }">{{ item.document.content.part_of_2 }}</router-link>
+        </p>
     </div>
 </template>
 
