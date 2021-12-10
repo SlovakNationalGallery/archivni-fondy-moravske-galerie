@@ -1,5 +1,5 @@
 <template>
-    <select v-model="modelValue" @update:modelValue="$emit('update:modelValue', modelValue)">
+    <select v-model="value" @update:modelValue="$emit('update', value)">
         <option :value="null">{{ label }}</option>
         <option v-for="(count, key) in options" :key="key" :value="key">{{ key }} [{{ count }}]</option>
     </select>
@@ -7,7 +7,7 @@
 
 <script>
 export default {
-    props: ['modelValue', 'options', 'label'],
-    emits: ['update:modelValue'],
+    props: ['value', 'options', 'label'],
+    emits: ['update'],
 }
 </script>

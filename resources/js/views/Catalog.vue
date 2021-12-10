@@ -1,6 +1,10 @@
 <template>
-    <div v-for="(value, key) in query.filter" :key="key">
-        <facet v-model="query.filter[key]" :options="options[key]" :label="key" @update:modelValue="update" />
+    <div v-for="(filterOptions, key) in options.filter" :key="key">
+        <facet
+        :label="key"
+        :value="$route.query?.filter?.[key] ?? null"
+        :options="filterOptions"
+        @update="value => facetUpdate(value, key)" />
     </div>
 
     <div v-for="(item, i) in items" :key="i">
@@ -18,15 +22,11 @@ export default {
     components: { Facet },
     data() {
         return {
-            query: {
-                filter: {
-                    part_of_1: null,
-                    part_of_2: null,
-                },
-            },
             options: {
-                part_of_1: [],
-                part_of_2: [],
+                filter: {
+                    part_of_1: [],
+                    part_of_2: [],
+                }
             },
             items: [],
             page: 1,
@@ -34,19 +34,16 @@ export default {
         }
     },
     created() {
-        this.query = _.merge(this.query, this.$route.query)
-        this.$watch('query', function (query) {
-            // force replace because query gets updated in current route
-            // therefore isSameRouteLocation returns true and route is not replaced
-            this.$router.replace({ query, force: true })
-        }, {
-            deep: true,
-        })
         this.update()
     },
     methods: {
+        facetUpdate(value, key) {
+            const query = _.merge(this.$route.query, { filter: { [key]: value } })
+            this.$router.replace({ query })
+            this.update()
+        },
         fetchItems() {
-            const params = this.filterParams(this.query.filter)
+            const params = this.filterParams()
             params.set('page', this.page)
             axios.get(`/api/items`, { params })
                 .then(({ data }) => {
@@ -59,24 +56,22 @@ export default {
                 }
             })
         },
-        filterParams(filter) {
-            // todo global stringify
-            const queryString = this.$router.options.stringifyQuery({ filter })
+        filterParams() {
+            const queryString = this.$router.options.stringifyQuery(this.$route.query)
             return new URLSearchParams(queryString)
         },
         fetchAggregations() {
-            const params = this.filterParams(this.query.filter)
+            const params = this.filterParams()
             // todo infinity
             params.set('size', 1000)
-            const terms = Object.keys(this.query.filter)
-            terms.forEach(field => {
+            Object.keys(this.options.filter).forEach(field => {
                 params.append(`terms[${field}]`, field)
             })
             return axios
                 .get(`/api/items/aggregations`, { params })
                 .then(({ data }) => {
                     Object.entries(data).forEach(([facet, options]) => {
-                        this.options[facet] = options
+                        this.options.filter[facet] = options
                     })
                 })
         },
@@ -93,6 +88,11 @@ export default {
                     this.fetchItems()
                 }
             })
+        }
+    },
+    watch: {
+        '$route'() {
+            this.update()
         }
     }
 }
