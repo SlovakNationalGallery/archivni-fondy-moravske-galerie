@@ -1,4 +1,11 @@
 <template>
-    <h1><router-link :to="{ name: 'catalog', query: {} }">Archivní fondy Moravské galerie</router-link></h1>
-    <router-view />
+    <div class="flex flex-col flex-wrap items-stretch min-h-full max-w-screen-xl mx-auto w-full">
+        <header class="shrink-0">
+            <h1 class="font-medium py-4 text-lg"><router-link :to="{ name: 'catalog', query: {} }">Archivní fondy Moravské galerie</router-link></h1>
+        </header>
+        <main class="grow shrink-0">
+            <router-view />
+        </main>
+        <footer class="py-4 shrink-0 text-right"><a href="https://lab.sng.sk/">lab.SNG</a></footer>
+    </div>
 </template>

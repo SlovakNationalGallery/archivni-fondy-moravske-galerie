@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
+import { VueMasonryPlugin } from 'vue-masonry'
 import App from './App.vue'
 import Catalog from './views/Catalog.vue'
 import Detail from './views/Detail.vue'
@@ -35,5 +36,6 @@ const router = createRouter({
 
 const app = createApp(App)
     .use(router)
+    .use(VueMasonryPlugin)
 
 app.mount('#app')

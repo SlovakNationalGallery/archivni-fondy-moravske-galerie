@@ -5,7 +5,19 @@ module.exports = {
     './resources/**/*.vue',
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontSize: {
+        'sm': ['.875rem', {
+          lineHeight: 1.2,
+        }],
+        'base': ['1rem', {
+          lineHeight: 1.2,
+        }],
+        'lg': ['1.125rem', {
+          lineHeight: 1.2,
+        }],
+      }
+    },
   },
   plugins: [],
 }

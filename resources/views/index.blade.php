@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="h-full">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,11 +7,11 @@
         <link href="{{ mix('css/app.css') }}" rel="stylesheet">
         <title>Archivní fondy Moravské galerie</title>
     </head>
-    <body class="antialias text-base">
+    <body class="antialias h-full text-base">
         <noscript>
             <strong>We're sorry but this site doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
         </noscript>
-        <div id="app"></div>
+        <div class="h-full" id="app"></div>
         <script src="{{ mix('/js/app.js') }}"></script>
     </body>
 </html>
