@@ -16,6 +16,9 @@ module.exports = {
         'lg': ['1.125rem', {
           lineHeight: 1.2,
         }],
+        'lg': ['1.25rem', {
+          lineHeight: 1.2,
+        }],
       }
     },
   },

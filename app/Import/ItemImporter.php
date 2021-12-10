@@ -14,27 +14,23 @@ class ItemImporter
     protected $map = [
         'Název' => 'title',
         'Obsah' => 'description',
-        'Autor_sb_předmětu' => 'author',
-        'Inv_číslo_MG' => 'inventory_number_mg',
         'Datace' => 'dating',
-        'Rok_od' => 'date_earliest',
+        'Rod_od' => 'date_earliest',
         'Rok_do' => 'date_latest',
-        'Autor_snímku' => 'author_image',
-        'Celek_1' => 'part_of_1',
-        'Celek_2' => 'part_of_2',
+        'Celek 1' => 'part_of_1',
+        'Celek 2' => 'part_of_2',
         'Instituce' => 'institution',
         'Fond' => 'archive_fund',
-        'Sbírka' => 'collection',
-        'Inv_číslo' => 'inventory_number',
         'Karton' => 'archive_box',
-        'Složka' => 'archive_folder',
-        'Typ_dokumentu' => 'work_type',
-        'Související' => 'related_item',
-        'Entity (místa, jména)' => 'related_entity',
+        'Původní spisové číslo' => 'archive_folder',
+        'Folia' => 'archive_file',
+        'Odkazy' => 'archive_folder_references',
+        'Typ dokumentu' => 'work_type',
     ];
 
     protected $options = [
         'delimiter' => ';',
+        'input_encoding' => 'CP1250',
     ];
 
     public function __construct(CsvRepository $repository)
@@ -47,7 +43,7 @@ class ItemImporter
         $rows = $this->repository->getAll($file, $this->options);
         foreach ($rows as $row) {
             $data = $this->map(collect($row));
-            $images = Str::of($row['Indexace_digitalizátu'])
+            $images = Str::of($row['Idexace digitalizátu'])
                 ->explode(';')
                 ->map(function ($image) use ($imageDir) {
                     return "$imageDir/$image";
@@ -75,14 +71,10 @@ class ItemImporter
 
     protected function getConditions(Collection $data)
     {
-        foreach ([
-            ['archive_fund', 'inventory_number'],
-            ['archive_fund', 'archive_box', 'archive_folder'],
-        ] as $columns) {
-            $conditions = $data->only($columns);
-            if ($conditions->has($columns) && !$conditions->some('is_null')) {
-                return $conditions->toArray();
-            }
+        $columns = ['archive_fund', 'archive_box', 'archive_folder', 'archive_file'];
+        $conditions = $data->only($columns);
+        if ($conditions->has($columns) && !$conditions->some('is_null')) {
+            return $conditions->toArray();
         }
 
         throw new \Exception;
@@ -93,8 +85,42 @@ class ItemImporter
         return $row
             ->intersectByKeys($this->map)
             ->mapWithKeys(function ($value, $key) {
-                $value = $value !== '' ? $value : null;
-                return [$this->map[$key] => $value];
+                $mappedKey = $this->map[$key];
+                if ($value === '') {
+                    return [$mappedKey => null];
+                }
+
+                $methodName = sprintf('map%s', Str::camel($mappedKey));
+                if (method_exists($this, $methodName)) {
+                    $value = $this->$methodName($value);
+                }
+
+                return [$mappedKey => $value];
+            });
+    }
+
+    protected function mapDateEarliest($dateEarliest)
+    {
+        return Str::of($dateEarliest)
+            ->explode('-')
+            ->filter(function ($value) { return is_int($value); })
+            ->first();
+    }
+
+    protected function mapDateLatest($dateLatest)
+    {
+        return Str::of($dateLatest)
+            ->explode('-')
+            ->filter(function ($value) { return is_int($value); })
+            ->last();
+    }
+
+    protected function mapArchiveFolderReferences($archiveFolderReferences)
+    {
+        return Str::of($archiveFolderReferences)
+            ->explode(';')
+            ->map(function ($archiveFolderReference) {
+                return trim($archiveFolderReference);
             });
     }
 }

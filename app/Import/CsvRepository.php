@@ -61,17 +61,9 @@ class CsvRepository
             $reader->setEscape($options['escape']);
         }
 
-        if (isset($options['newline'])) {
-            $reader->setNewline($options['newline']);
-        }
-
         if (isset($options['input_encoding'])) {
-            if (!$reader->isActiveStreamFilter()) {
-                throw new \LogicException('Stream filter is not active');
-            }
-
             $conversionFilter = $this->getConversionFilter($options['input_encoding']);
-            $reader->appendStreamFilter($conversionFilter);
+            $reader->addStreamFilter($conversionFilter);
         }
 
         return $reader;

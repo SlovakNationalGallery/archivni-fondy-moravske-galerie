@@ -15,6 +15,10 @@ class Item extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia, Searchable;
 
+    protected $casts = [
+        'archive_folder_references' => 'json',
+    ];
+
     public static $filterables = [
         'part_of_1',
         'part_of_2',

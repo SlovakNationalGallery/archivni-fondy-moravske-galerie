@@ -15,28 +15,22 @@ class CreateItemsTable extends Migration
     {
         Schema::create('items', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('title')->nullable();
             $table->text('description')->nullable();
-            $table->string('author')->nullable();
-            $table->string('inventory_number_mg')->nullable();
             $table->string('dating')->nullable();
             $table->integer('date_earliest')->nullable();
             $table->integer('date_latest')->nullable();
-            $table->string('author_image')->nullable();
             $table->string('part_of_1')->nullable();
             $table->string('part_of_2')->nullable();
             $table->string('institution')->nullable();
-            $table->string('archive_fund');
-            $table->string('collection')->nullable();
-            $table->string('inventory_number')->nullable();
-            $table->string('archive_box')->nullable();
+            $table->string('archive_fund')->nullable();
+            $table->integer('archive_box')->nullable();
             $table->string('archive_folder')->nullable();
+            $table->string('archive_file')->nullable();
+            $table->json('archive_folder_references')->nullable();
             $table->string('work_type')->nullable();
-            $table->string('related_item')->nullable();
-            $table->string('related_entity')->nullable();
             $table->timestamps();
-            $table->unique(['archive_fund', 'inventory_number']);
-            $table->unique(['archive_fund', 'archive_box', 'archive_folder']);
+            $table->unique(['archive_fund', 'archive_box', 'archive_folder', 'archive_file'], 'archive_file');
         });
     }
 
