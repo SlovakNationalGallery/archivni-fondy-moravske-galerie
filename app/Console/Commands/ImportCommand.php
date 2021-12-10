@@ -40,6 +40,9 @@ class ImportCommand extends Command
     public function handle()
     {
         $importer = new ItemImporter(new CsvRepository());
-        $importer->importFile(storage_path('app/import/data.csv'));
+        $importer->importFile(
+            storage_path('app/import/data.csv'),
+            storage_path('app/import/images')
+        );
     }
 }

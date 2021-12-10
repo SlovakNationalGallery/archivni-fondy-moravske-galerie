@@ -13,7 +13,7 @@
     <div class="flex flex-wrap -mx-2 w-full" item-selector="[data-masonry-tile]" transition-duration="0" v-masonry="masonry">
         <div v-masonry-tile class="px-2 py-4 w-1/4" v-for="(item, i) in items" :key="i" data-masonry-tile>
             <router-link :to="{ name: 'detail', params: { id: item.id } }">
-                <img @load="debouncedRedraw" class="w-full" :src="`https://via.placeholder.com/500x${randomHeight()}`" />
+                <img @load="debouncedRedraw" class="w-full" :srcset="item.images?.[0]?.srcset" />
                 <div class="font-medium mt-1">{{ item.title }}</div>
                 <div class="italic mt-1">{{ item.dating }}</div>
             </router-link>
@@ -59,11 +59,12 @@ export default {
         fetchItems() {
             const params = this.filterParams()
             params.set('page', this.page)
+            params.set('size', 12)
             axios.get(`/api/items`, { params })
                 .then(({ data }) => {
                 if (data.data.length) {
                     this.page += 1
-                    this.items.push(...data.data.map(item => item.document.content))
+                    this.items.push(...data.data)
                     this.$nextTick(() => {
                         this.observer.observe(this.$refs.last)
                     })

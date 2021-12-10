@@ -5,12 +5,15 @@ namespace App\Models;
 use ElasticScoutDriverPlus\Builders\BoolQueryBuilder;
 use ElasticScoutDriverPlus\Searchable;
 use ElasticScoutDriverPlus\Support\Query;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Item extends Model
+class Item extends Model implements HasMedia
 {
-    use HasFactory, Searchable;
+    use HasFactory, InteractsWithMedia, Searchable;
 
     public static $filterables = [
         'part_of_1',
@@ -42,5 +45,19 @@ class Item extends Model
             }
         }
         return $builder;
+    }
+
+    protected static function booted()
+    {
+        static::addGlobalScope('media', function (Builder $builder) {
+            $builder->with('media');
+        });
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this
+            ->addMediaCollection('default')
+            ->withResponsiveImages();
     }
 }

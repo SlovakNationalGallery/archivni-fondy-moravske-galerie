@@ -5,6 +5,7 @@ namespace App\Import;
 use App\Models\Item;
 use App\Import\CsvRepository;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 class ItemImporter
 {
@@ -41,21 +42,35 @@ class ItemImporter
         $this->repository = $repository;
     }
 
-    public function importFile($file)
+    public function importFile($file, $imageDir)
     {
         $rows = $this->repository->getAll($file, $this->options);
         foreach ($rows as $row) {
-            $mapped = $this->map(collect($row));
-            $this->import($mapped);
+            $data = $this->map(collect($row));
+            $images = Str::of($row['Indexace_digitalizátu'])
+                ->explode(';')
+                ->map(function ($image) use ($imageDir) {
+                    return "$imageDir/$image";
+                });
+            $this->import($data, $images);
         }
     }
 
-    public function import(Collection $data)
+    public function import(Collection $data, Collection $images)
     {
         $conditions = $this->getConditions($data);
         $item = Item::where($conditions)->first() ?? new Item();
         $item->forceFill($data->toArray());
         $item->save();
+
+        $item->clearMediaCollection();
+        $images
+            ->filter(function ($image) { return is_file($image); })
+            ->each(function ($image) use ($item) {
+                $item->addMedia($image)
+                    ->preservingOriginal()
+                    ->toMediaCollection();
+            });
     }
 
     protected function getConditions(Collection $data)

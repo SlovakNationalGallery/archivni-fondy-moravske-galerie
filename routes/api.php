@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Resources\ItemResource;
 use App\Models\Item;
 use ElasticAdapter\Search\Aggregation;
 use ElasticAdapter\Search\Bucket;
@@ -45,7 +46,10 @@ Route::get('items', function (Request $request) {
         });
 
     $items = $searchRequest->paginate($size);
-    return response()->json($items);
+    $items->setCollection($items->models());
+    $items->appends($request->query());
+
+    return ItemResource::collection($items);
 });
 
 Route::get('items/aggregations', function (Request $request) {
