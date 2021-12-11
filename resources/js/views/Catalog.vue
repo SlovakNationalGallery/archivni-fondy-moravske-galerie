@@ -1,7 +1,7 @@
 <template>
     <div class="-mx-2">
-        <div class="flex flex-wrap">
-            <div class="px-2 w-full lg:w-1/2" v-for="(filterOptions, key) in options.filter" :key="key">
+        <div class="flex flex-wrap -my-2">
+            <div class="my-2 px-2 w-full lg:w-1/2" v-for="(filterOptions, key) in options.filter" :key="key">
                 <facet
                 class="border-2 border-black"
                 :label="key"
@@ -22,7 +22,7 @@
 
     <div class="-mx-2" item-selector="[data-masonry-tile]" transition-duration="0" v-masonry="masonry">
         <div class="flex flex-wrap mb-10">
-            <div v-masonry-tile class="px-2 py-4 w-1/4" v-for="(item, i) in items" :key="i" data-masonry-tile>
+            <div v-masonry-tile class="px-2 py-4 w-1/2 lg:w-1/4" v-for="(item, i) in items" :key="i" data-masonry-tile>
                 <router-link :to="{ name: 'detail', params: { id: item.id } }">
                     <img @load="debouncedRedraw" class="w-full" :srcset="item.images?.[0]?.srcset" />
                     <div class="font-medium mt-1">{{ item.title }}</div>
