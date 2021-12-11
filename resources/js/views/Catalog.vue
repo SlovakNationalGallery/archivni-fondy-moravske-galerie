@@ -1,47 +1,65 @@
 <template>
-    <div class="flex flex-wrap -mx-2 w-full">
-        <div class="px-2 w-full lg:w-1/2" v-for="(filterOptions, key) in options.filter" :key="key">
-            <facet
-            class="border-2 border-black"
-            :label="key"
-            :value="$route.query?.filter?.[key] ?? null"
-            :options="filterOptions"
-            @update="value => facetUpdate(value, key)" />
+    <div class="-mx-2">
+        <div class="flex flex-wrap">
+            <div class="px-2 w-full lg:w-1/2" v-for="(filterOptions, key) in options.filter" :key="key">
+                <facet
+                class="border-2 border-black"
+                :label="key"
+                :value="$route.query?.filter?.[key] ?? null"
+                :options="filterOptions"
+                @update="value => facetUpdate(value, key)" />
+            </div>
         </div>
     </div>
 
-    <div class="flex flex-wrap -mx-2 w-full" item-selector="[data-masonry-tile]" transition-duration="0" v-masonry="masonry">
-        <div v-masonry-tile class="px-2 py-4 w-1/4" v-for="(item, i) in items" :key="i" data-masonry-tile>
-            <router-link :to="{ name: 'detail', params: { id: item.id } }">
-                <img @load="debouncedRedraw" class="w-full" :srcset="item.images?.[0]?.srcset" />
-                <div class="font-medium mt-1">{{ item.title }}</div>
-                <div class="italic mt-1">{{ item.dating }}</div>
-            </router-link>
+    <slider
+    class="mb-4 mt-12"
+    :min="options.minYear"
+    :max="options.maxYear"
+    v-if="yearRange"
+    v-model="yearRange"
+    @update:modelValue="yearsUpdate" />
+
+    <div class="-mx-2" item-selector="[data-masonry-tile]" transition-duration="0" v-masonry="masonry">
+        <div class="flex flex-wrap mb-10">
+            <div v-masonry-tile class="px-2 py-4 w-1/4" v-for="(item, i) in items" :key="i" data-masonry-tile>
+                <router-link :to="{ name: 'detail', params: { id: item.id } }">
+                    <img @load="debouncedRedraw" class="w-full" :srcset="item.images?.[0]?.srcset" />
+                    <div class="font-medium mt-1">{{ item.title }}</div>
+                    <div class="italic mt-1">{{ item.dating }}</div>
+                </router-link>
+            </div>
         </div>
-        <div ref="last"></div>
     </div>
+
 </template>
+
+<style src="@vueform/slider/themes/default.css"></style>
 
 <script>
 import Facet from '../components/Facet.vue'
+import Slider from '@vueform/slider'
 import axios from 'axios'
 import _ from 'lodash'
 
 export default {
-    components: { Facet },
+    components: { Facet, Slider },
     data() {
         return {
+            yearRange: null,
             masonry: 'masonry',
             options: {
                 filter: {
                     part_of_1: [],
                     part_of_2: [],
-                }
+                },
+                minYear: 1900,
+                maxYear: 2000,
             },
             items: [],
             page: 1,
             observer: new IntersectionObserver(this.observerCallback),
-            debouncedRedraw: _.debounce(() => { this.$redrawVueMasonry(this.masonry) }, 1),
+            debouncedRedraw: _.debounce(() => { this.$redrawVueMasonry(this.masonry) }, 100),
         }
     },
     created() {
@@ -56,6 +74,15 @@ export default {
             const query = _.merge(this.$route.query, { filter: { [key]: value } })
             this.$router.replace({ query, force: true })
         },
+        yearsUpdate(value) {
+            const query = _.merge(this.$route.query, {
+                filter: {
+                    date_earliest: { gte: value[0] },
+                    date_latest: { lte: value[1] },
+                }
+            })
+            this.$router.replace({ query, force: true })
+        },
         fetchItems() {
             const params = this.filterParams()
             params.set('page', this.page)
@@ -66,7 +93,9 @@ export default {
                     this.page += 1
                     this.items.push(...data.data)
                     this.$nextTick(() => {
-                        this.observer.observe(this.$refs.last)
+                        const last = document.querySelector('[data-masonry-tile]:last-child')
+                        this.observer.observe(last)
+                        this.debouncedRedraw()
                     })
                 }
             })
@@ -90,11 +119,29 @@ export default {
                     })
                 })
         },
+        fetchYears() {
+            const params = this.filterParams()
+            params.delete('filter[date_earliest][gte]')
+            params.delete('filter[date_latest][lte]')
+            params.append(`min[date_earliest]`, 'date_earliest')
+            params.append(`max[date_latest]`, 'date_latest')
+            return axios
+                .get(`/api/items/aggregations`, { params })
+                .then(({ data }) => {
+                    this.options.minYear = data.date_earliest
+                    this.options.maxYear = data.date_latest
+                    this.yearRange = [
+                        this.yearRange?.[0] ?? this.options.minYear,
+                        this.yearRange?.[1] ?? this.options.maxYear,
+                    ]
+                })
+        },
         update() {
             this.page = 1
             this.items = []
             this.fetchAggregations()
             this.fetchItems()
+            this.fetchYears()
         },
         observerCallback(entries) {
             entries.forEach(entry => {
@@ -106,7 +153,11 @@ export default {
         }
     },
     watch: {
-        '$route'() {
+        '$route'(value) {
+            this.yearRange = [
+                value.query?.filter?.date_earliest?.gte,
+                value.query?.filter?.date_latest?.lte,
+            ]
             this.update()
         }
     }

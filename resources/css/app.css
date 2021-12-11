@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    :root {
+        --slider-connect-bg: black;
+        --slider-tooltip-bg: black;
+        --slider-handle-ring-color: rgba(0, 0, 0, .2);
+    }
+}

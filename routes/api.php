@@ -94,7 +94,12 @@ Route::get('items/aggregations', function (Request $request) {
 
     $searchResult = $searchRequest->execute();
     return response()->json($searchResult->aggregations()->map(function (Aggregation $aggregation) {
-        return $aggregation->raw()['value'] ?? $aggregation->buckets()->mapWithKeys(function (Bucket $bucket) {
+        $raw = $aggregation->raw();
+        if (array_key_exists('value', $raw)) {
+            return $raw['value'];
+        }
+
+        return $aggregation->buckets()->mapWithKeys(function (Bucket $bucket) {
             return [$bucket->key() => $bucket->docCount()];
         });
     }));

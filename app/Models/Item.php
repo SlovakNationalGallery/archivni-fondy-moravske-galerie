@@ -25,6 +25,8 @@ class Item extends Model implements HasMedia
     ];
 
     public static $rangeables = [
+        'date_earliest',
+        'date_latest',
     ];
 
     public static $sortables = [

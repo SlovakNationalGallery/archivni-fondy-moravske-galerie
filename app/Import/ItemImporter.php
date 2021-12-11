@@ -101,18 +101,20 @@ class ItemImporter
 
     protected function mapDateEarliest($dateEarliest)
     {
-        return Str::of($dateEarliest)
-            ->explode('-')
-            ->filter(function ($value) { return is_int($value); })
-            ->first();
+        return $this->parseDates($dateEarliest)->first();
     }
 
     protected function mapDateLatest($dateLatest)
     {
-        return Str::of($dateLatest)
+        return $this->parseDates($dateLatest)->last();
+    }
+
+    protected function parseDates($dates)
+    {
+        return Str::of($dates)
             ->explode('-')
-            ->filter(function ($value) { return is_int($value); })
-            ->last();
+            ->filter(function ($date) { return ctype_digit($date); })
+            ->map(function ($date) { return (int)$date; });
     }
 
     protected function mapArchiveFolderReferences($archiveFolderReferences)
