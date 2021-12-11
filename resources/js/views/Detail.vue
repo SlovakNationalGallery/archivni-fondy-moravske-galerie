@@ -26,6 +26,7 @@
         </p>
 
         <swiper
+        @imagesReady="slideTo(0)"
         @swiper="setSwiper"
         class="my-4"
         slidesPerView="auto">
@@ -80,16 +81,15 @@ export default {
         },
         setSwiper(swiper) {
             this.swiper = swiper
-            this.$nextTick(() => {
-                this.swiper.update()
-                this.swiper.slideTo(0)
-            })
         },
         swiperPrev() {
-            this.swiper.slidePrev()
+            this.swiper?.slidePrev()
         },
         swiperNext() {
-            this.swiper.slideNext()
+            this.swiper?.slideNext()
+        },
+        slideTo(index) {
+            this.swiper?.slideTo(index)
         },
     }
 }
