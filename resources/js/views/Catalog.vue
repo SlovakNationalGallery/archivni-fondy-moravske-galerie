@@ -93,9 +93,9 @@ export default {
                     this.page += 1
                     this.items.push(...data.data)
                     this.$nextTick(() => {
+                        this.$redrawVueMasonry(this.masonry)
                         const last = document.querySelector('[data-masonry-tile]:last-child')
                         this.observer.observe(last)
-                        this.debouncedRedraw()
                     })
                 }
             })
