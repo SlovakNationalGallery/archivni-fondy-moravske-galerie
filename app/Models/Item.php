@@ -22,6 +22,7 @@ class Item extends Model implements HasMedia
     public static $filterables = [
         'part_of_1',
         'part_of_2',
+        'archive_folder',
     ];
 
     public static $rangeables = [
