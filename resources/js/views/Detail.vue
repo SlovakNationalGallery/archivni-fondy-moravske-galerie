@@ -24,11 +24,30 @@
         <p class="mt-4 whitespace-pre-wrap">
             {{ item.description }}
         </p>
+
+        <swiper
+        @swiper="setSwiper"
+        class="my-4"
+        slidesPerView="auto">
+            <swiper-slide class="!w-auto" v-for="(height, i) in [200, 300, 400, 200, 300, 500, 200, 400, 400, 300, 200]" :key="i">
+                <img class="h-40" :src="`https://via.placeholder.com/400x${height}`" />
+            </swiper-slide>
+        </swiper>
+
+        <div class="flex justify-between my-4">
+            <span class="cursor-pointer underline hover:no-underline" @click="swiperPrev">Prev</span>
+            <span>{{ swiper?.realIndex + 1 }}/{{ swiper?.slides?.length }}</span>
+            <span class="cursor-pointer underline hover:no-underline" @click="swiperNext">Next</span>
+        </div>
     </div>
 </template>
 
 <script>
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import 'swiper/css';
+
 export default {
+    components: { Swiper, SwiperSlide },
     data() {
         return {
             item: null,
@@ -45,6 +64,7 @@ export default {
                 'archive_file',
                 'work_type',
             ],
+            swiper: null,
         }
     },
     created() {
@@ -57,7 +77,20 @@ export default {
             }).then(({ data }) => {
                 this.item = data.document.content
             })
-        }
+        },
+        setSwiper(swiper) {
+            this.swiper = swiper
+            this.$nextTick(() => {
+                this.swiper.update()
+                this.swiper.slideTo(0)
+            })
+        },
+        swiperPrev() {
+            this.swiper.slidePrev()
+        },
+        swiperNext() {
+            this.swiper.slideNext()
+        },
     }
 }
 </script>
