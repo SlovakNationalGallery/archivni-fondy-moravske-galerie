@@ -17,20 +17,25 @@ class CreateItemsTable extends Migration
             $table->id();
             $table->string('title')->nullable();
             $table->text('description')->nullable();
+            $table->string('author')->nullable();
+            $table->string('inventory_number_mg')->nullable();
             $table->string('dating')->nullable();
             $table->integer('date_earliest')->nullable();
             $table->integer('date_latest')->nullable();
+            $table->string('author_image')->nullable();
             $table->string('part_of_1')->nullable();
             $table->string('part_of_2')->nullable();
             $table->string('institution')->nullable();
             $table->string('archive_fund')->nullable();
+            $table->string('collection')->nullable();
+            $table->string('inventory_number')->nullable();
             $table->integer('archive_box')->nullable();
             $table->string('archive_folder')->nullable();
-            $table->string('archive_file')->nullable();
-            $table->json('archive_folder_references')->nullable();
             $table->string('work_type')->nullable();
+            $table->json('archive_folder_references')->nullable();
+            $table->json('images')->nullable();
             $table->timestamps();
-            $table->unique(['archive_fund', 'archive_box', 'archive_folder', 'archive_file'], 'archive_file');
+            $table->unique(['archive_fund', 'archive_box', 'archive_folder', 'inventory_number'], 'unique');
         });
     }
 

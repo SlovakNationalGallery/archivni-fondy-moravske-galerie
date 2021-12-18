@@ -4,7 +4,7 @@
             <div class="my-2 px-2 w-full lg:w-1/2" v-for="(filterOptions, key) in options.filter" :key="key">
                 <facet
                 class="border-2 border-black"
-                :label="key"
+                :label="labels[key]"
                 :value="$route.query?.filter?.[key] ?? null"
                 :options="filterOptions"
                 @update="value => facetUpdate(value, key)" />
@@ -24,7 +24,7 @@
         <div class="flex flex-wrap mb-10">
             <div v-masonry-tile class="px-2 py-4 w-1/2 lg:w-1/4" v-for="(item, i) in items" :key="i" data-masonry-tile>
                 <router-link :to="{ name: 'detail', params: { id: item.id } }">
-                    <img @load="debouncedRedraw" class="w-full" :srcset="item.images?.[0]?.srcset" />
+                    <img @load="debouncedRedraw" class="w-full" :src="item.image_urls[0]" />
                     <div class="font-medium mt-1">{{ item.title }}</div>
                     <div class="italic mt-1">{{ item.dating }}</div>
                 </router-link>
@@ -50,11 +50,21 @@ export default {
             masonry: 'masonry',
             options: {
                 filter: {
-                    part_of_1: [],
-                    part_of_2: [],
+                    part_of: [],
+                    authors: [],
+                    institution: [],
+                    archive_fund: [],
+                    work_type: [],
                 },
                 minYear: 1900,
                 maxYear: 2000,
+            },
+            labels: {
+                part_of: 'Celek',
+                authors: 'Autor',
+                institution: 'Vlastník',
+                archive_fund: 'Fond',
+                work_type: 'Dokument',
             },
             items: [],
             page: 1,

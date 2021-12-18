@@ -15,15 +15,16 @@ final class CreateItems implements MigrationInterface
     {
         Index::create('items', function (Mapping $mapping, Settings $settings) {
             $mapping
-                ->keyword('part_of_1')
-                ->keyword('part_of_2')
+                ->keyword('authors')
+                ->keyword('part_of')
                 ->keyword('institution')
                 ->keyword('archive_fund')
                 ->keyword('archive_box')
                 ->keyword('archive_folder')
                 ->keyword('work_type')
                 ->integer('date_earliest')
-                ->integer('date_latest');
+                ->integer('date_latest')
+                ->keyword('images');
         });
     }
 

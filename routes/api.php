@@ -113,5 +113,6 @@ Route::get('items/{id}', function (Request $request, $id) {
         abort(404);
     }
 
-    return response()->json($items->hits()->first());
+    $item = $items->models()->first();
+    return new ItemResource($item);
 });

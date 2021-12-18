@@ -2,26 +2,32 @@
     <div v-if="item">
         <h2 class="mb-4">{{ item.title }}</h2>
 
-        <p v-for="filterable in filterables" :key="filterable">
-            {{ filterable }}:
-            <router-link class="underline hover:no-underline" :to="{ name: 'catalog', query: { filter: { [filterable]: item[filterable] } } }">{{ item[filterable] }}</router-link>
-        </p>
+        <div v-if="item.image_urls.length">
+            <img :src="item.image_urls[0]" :alt="item.title">
+        </div>
 
-        <p v-for="attribute in attributes" :key="attribute">
-            {{ attribute }}: {{ item[attribute] }}
-        </p>
+        <div class="my-4">
+            <p v-for="filterable in filterables" :key="filterable">
+                {{ filterable }}:
+                <router-link class="underline hover:no-underline" :to="{ name: 'catalog', query: { filter: { [filterable]: item[filterable] } } }">{{ item[filterable] }}</router-link>
+            </p>
 
-        <p>
-            archive_folder_references:
-            <template v-for="(reference, i) in item.archive_folder_references" :key="i">
-                <template v-if="i">, </template>
-                <router-link :to="{ name: 'catalog', query: { filter: { archive_folder: reference } } }" class="underline hover:no-underline">
-                    {{ reference }}
-                </router-link>
-            </template>
-        </p>
+            <p v-for="attribute in attributes" :key="attribute">
+                {{ attribute }}: {{ item[attribute] }}
+            </p>
 
-        <p class="mt-4 whitespace-pre-wrap">
+            <p>
+                archive_folder_references:
+                <template v-for="(reference, i) in item.archive_folder_references" :key="i">
+                    <template v-if="i">, </template>
+                    <router-link :to="{ name: 'catalog', query: { filter: { archive_folder: reference } } }" class="underline hover:no-underline">
+                        {{ reference }}
+                    </router-link>
+                </template>
+            </p>
+        </div>
+
+        <p class="my-4 whitespace-pre-wrap">
             {{ item.description }}
         </p>
 
@@ -30,8 +36,8 @@
         @swiper="setSwiper"
         class="my-4"
         slidesPerView="auto">
-            <swiper-slide class="!w-auto" v-for="(height, i) in [200, 300, 400, 200, 300, 500, 200, 400, 400, 300, 200]" :key="i">
-                <img class="h-40" :src="`https://via.placeholder.com/400x${height}`" />
+            <swiper-slide class="!w-auto" v-for="(image_url, i) in item.image_urls" :key="i">
+                <img class="h-40" :src="image_url" />
             </swiper-slide>
         </swiper>
 
@@ -76,7 +82,7 @@ export default {
             axios.get(`/api/items/${this.$route.params.id}`, {
                 params: { page: this.page }
             }).then(({ data }) => {
-                this.item = data.document.content
+                this.item = data.data
             })
         },
         setSwiper(swiper) {

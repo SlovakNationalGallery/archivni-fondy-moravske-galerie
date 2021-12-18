@@ -15,7 +15,7 @@ class ItemResource extends JsonResource
     public function toArray($request)
     {
         $array = parent::toArray($request);
-        $array['images'] = MediaResource::collection($this->getMedia());
+        $array['image_urls'] = $this->getImageUrls();
         return $array;
     }
 }

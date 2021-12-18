@@ -14,18 +14,23 @@ class ItemImporter
     protected $map = [
         'Název' => 'title',
         'Obsah' => 'description',
+        'Autor_sb_předmětu' => 'author',
+        'Inv_číslo_MG' => 'inventory_number_mg',
         'Datace' => 'dating',
         'Rod_od' => 'date_earliest',
         'Rok_do' => 'date_latest',
+        'Autor_snímku' => 'author_image',
         'Celek 1' => 'part_of_1',
         'Celek 2' => 'part_of_2',
-        'Instituce' => 'institution',
+        'Vlastník' => 'institution',
         'Fond' => 'archive_fund',
+        'Sbírka' => 'collection',
+        'Inv_číslo' => 'inventory_number',
         'Karton' => 'archive_box',
-        'Původní spisové číslo' => 'archive_folder',
-        'Folia' => 'archive_file',
-        'Odkazy' => 'archive_folder_references',
+        'Složka ' => 'archive_folder',
         'Typ dokumentu' => 'work_type',
+        'Související' => 'archive_folder_references',
+        'Idexace digitalizátu' => 'images',
     ];
 
     protected $options = [
@@ -59,25 +64,24 @@ class ItemImporter
         $item->forceFill($data->toArray());
         $item->save();
 
-        $item->clearMediaCollection();
-        $images
-            ->filter(function ($image) { return is_file($image); })
-            ->each(function ($image) use ($item) {
-                $item->addMedia($image)
-                    ->preservingOriginal()
-                    ->toMediaCollection();
-            });
+        // $item->clearMediaCollection();
+        // $images
+        //     ->filter(function ($image) { return is_file($image); })
+        //     ->each(function ($image) use ($item) {
+        //         $item->addMedia($image)
+        //             ->preservingOriginal()
+        //             ->toMediaCollection();
+        //     });
     }
 
     protected function getConditions(Collection $data)
     {
-        $columns = ['archive_fund', 'archive_box', 'archive_folder', 'archive_file'];
-        $conditions = $data->only($columns);
-        if ($conditions->has($columns) && !$conditions->some('is_null')) {
-            return $conditions->toArray();
-        }
-
-        throw new \Exception;
+        return $data->only([
+            'archive_fund',
+            'archive_box',
+            'archive_folder',
+            'inventory_number'])
+            ->toArray();
     }
 
     protected function map(Collection $row)
@@ -97,6 +101,26 @@ class ItemImporter
 
                 return [$mappedKey => $value];
             });
+    }
+
+    protected function mapImages($images)
+    {
+        return Str::of($images)
+            ->explode(';')
+            ->map(function ($image) {
+                $image = trim($image);
+                preg_match('/^(?<folder>[[:alnum:]]+)_(?<subfolder>[[:alnum:]]+)/', $image, $matches);
+                if (!isset($matches['folder'], $matches['subfolder'])) {
+                    return null;
+                }
+
+                return sprintf('MGHQ/%s/%s/%s.jp2',
+                    $matches['folder'],
+                    $matches['subfolder'],
+                    $image,
+                );
+            })
+            ->filter();
     }
 
     protected function mapDateEarliest($dateEarliest)

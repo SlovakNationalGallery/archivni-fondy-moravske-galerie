@@ -17,12 +17,16 @@ class Item extends Model implements HasMedia
 
     protected $casts = [
         'archive_folder_references' => 'json',
+        'images' => 'json',
     ];
 
     public static $filterables = [
-        'part_of_1',
-        'part_of_2',
+        'authors',
+        'part_of',
+        'institution',
+        'archive_fund',
         'archive_folder',
+        'work_type',
     ];
 
     public static $rangeables = [
@@ -32,6 +36,20 @@ class Item extends Model implements HasMedia
 
     public static $sortables = [
     ];
+
+    public function toSearchableArray()
+    {
+        $array = $this->toArray();
+        $array['part_of'] = [
+            $this->part_of_1,
+            $this->part_of_2,
+        ];
+        $array['authors'] = [
+            $this->author,
+            $this->author_image,
+        ];
+        return $array;
+    }
 
     public static function filterQuery(array $filter, BoolQueryBuilder $builder = null)
     {
@@ -66,5 +84,18 @@ class Item extends Model implements HasMedia
         $this
             ->addMediaCollection('default')
             ->withResponsiveImages();
+    }
+
+    public function getImageUrls($maxSize = 800)
+    {
+        return collect($this->images)
+            ->map(function ($image) use ($maxSize) {
+                return sprintf(
+                    '%s/preview/?path=%s&size=%d',
+                    config('images.host'),
+                    $image,
+                    $maxSize
+                );
+            });
     }
 }
