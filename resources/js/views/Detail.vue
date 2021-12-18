@@ -7,17 +7,29 @@
         </div>
 
         <div class="my-4">
-            <p v-for="filterable in filterables" :key="filterable">
-                {{ filterable }}:
-                <router-link class="underline hover:no-underline" :to="{ name: 'catalog', query: { filter: { [filterable]: item[filterable] } } }">{{ item[filterable] }}</router-link>
-            </p>
-
             <p v-for="attribute in attributes" :key="attribute">
-                {{ attribute }}: {{ item[attribute] }}
+                {{ labels[attribute] }}: {{ item[attribute] }}
             </p>
 
             <p>
-                archive_folder_references:
+                {{ labels.part_of }}:
+                <router-link class="underline hover:no-underline" :to="{ name: 'catalog', query: { filter: { part_of: item.part_of_1 } } }">{{ item.part_of_1 }}</router-link>,
+                <router-link class="underline hover:no-underline" :to="{ name: 'catalog', query: { filter: { part_of: item.part_of_2 } } }">{{ item.part_of_2 }}</router-link>
+            </p>
+
+            <p>
+                {{ labels.authors }}:
+                <router-link class="underline hover:no-underline" :to="{ name: 'catalog', query: { filter: { part_of: item.part_of_1 } } }">{{ item.part_of_1 }}</router-link>,
+                <router-link class="underline hover:no-underline" :to="{ name: 'catalog', query: { filter: { part_of: item.part_of_2 } } }">{{ item.part_of_2 }}</router-link>
+            </p>
+
+            <p v-for="filterable in filterables" :key="filterable">
+                {{ labels[filterable] }}:
+                <router-link class="underline hover:no-underline" :to="{ name: 'catalog', query: { filter: { [filterable]: item[filterable] } } }">{{ item[filterable] }}</router-link>
+            </p>
+
+            <p>
+                {{ labels.archive_folder_references }}:
                 <template v-for="(reference, i) in item.archive_folder_references" :key="i">
                     <template v-if="i">, </template>
                     <router-link :to="{ name: 'catalog', query: { filter: { archive_folder: reference } } }" class="underline hover:no-underline">
@@ -58,20 +70,28 @@ export default {
     data() {
         return {
             item: null,
-            filterables: [
-                'part_of_1',
-                'part_of_2',
-            ],
             attributes: [
                 'dating',
+            ],
+            filterables: [
                 'institution',
                 'archive_fund',
                 'archive_box',
                 'archive_folder',
-                'archive_file',
                 'work_type',
             ],
             swiper: null,
+            labels: {
+                part_of: 'Celek',
+                authors: 'Autor',
+                institution: 'Vlastník',
+                archive_fund: 'Fond',
+                archive_box: 'Karton',
+                archive_folder: 'Složka',
+                work_type: 'Dokument',
+                dating: 'Datace',
+                archive_folder_references: 'Související'
+            },
         }
     },
     created() {

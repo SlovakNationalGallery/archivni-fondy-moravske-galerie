@@ -25,6 +25,7 @@ class Item extends Model implements HasMedia
         'part_of',
         'institution',
         'archive_fund',
+        'archive_box',
         'archive_folder',
         'work_type',
     ];
