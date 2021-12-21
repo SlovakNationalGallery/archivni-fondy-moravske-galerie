@@ -16,7 +16,7 @@
     class="mb-4 mt-12"
     :min="options.minYear"
     :max="options.maxYear"
-    v-if="yearRange"
+    v-if="yearRange[0] && yearRange[1]"
     v-model="yearRange"
     @update:modelValue="yearsUpdate" />
 
@@ -46,7 +46,7 @@ export default {
     components: { Facet, Slider },
     data() {
         return {
-            yearRange: null,
+            yearRange: [],
             masonry: 'masonry',
             options: {
                 filter: {
@@ -56,8 +56,8 @@ export default {
                     archive_fund: [],
                     work_type: [],
                 },
-                minYear: 1900,
-                maxYear: 2000,
+                minYear: null,
+                maxYear: null,
             },
             labels: {
                 part_of: 'Celek',
