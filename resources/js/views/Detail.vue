@@ -7,28 +7,28 @@
         </div>
 
         <div class="my-4">
-            <p v-for="attribute in attributes" :key="attribute">
+            <p v-for="attribute in attributes.filter(key => item[key])" :key="attribute">
                 {{ labels[attribute] }}: {{ item[attribute] }}
             </p>
 
-            <p>
+            <p v-if="item.part_of_1 || item.part_of_2">
                 {{ labels.part_of }}:
-                <router-link class="underline hover:no-underline" :to="{ name: 'catalog', query: { filter: { part_of: item.part_of_1 } } }">{{ item.part_of_1 }}</router-link>,
+                <router-link class="underline hover:no-underline" :to="{ name: 'catalog', query: { filter: { part_of: item.part_of_1 } } }">{{ item.part_of_1 }}</router-link><template v-if="item.part_of_1 && item.part_of_2">,</template>
                 <router-link class="underline hover:no-underline" :to="{ name: 'catalog', query: { filter: { part_of: item.part_of_2 } } }">{{ item.part_of_2 }}</router-link>
             </p>
 
-            <p>
+            <p v-if="item.author || item.author_image">
                 {{ labels.authors }}:
-                <router-link class="underline hover:no-underline" :to="{ name: 'catalog', query: { filter: { part_of: item.part_of_1 } } }">{{ item.part_of_1 }}</router-link>,
-                <router-link class="underline hover:no-underline" :to="{ name: 'catalog', query: { filter: { part_of: item.part_of_2 } } }">{{ item.part_of_2 }}</router-link>
+                <router-link class="underline hover:no-underline" :to="{ name: 'catalog', query: { filter: { authors: item.author } } }" v-if="item.author">{{ item.author }}</router-link><template v-if="item.author && item.author_image">,</template>
+                <router-link class="underline hover:no-underline" :to="{ name: 'catalog', query: { filter: { authors: item.author_image } } }" v-if="item.author_image">{{ item.author_imgae }}</router-link>
             </p>
 
-            <p v-for="filterable in filterables" :key="filterable">
+            <p v-for="filterable in filterables.filter(key => item[key])" :key="filterable">
                 {{ labels[filterable] }}:
                 <router-link class="underline hover:no-underline" :to="{ name: 'catalog', query: { filter: { [filterable]: item[filterable] } } }">{{ item[filterable] }}</router-link>
             </p>
 
-            <p>
+            <p v-if="item.archive_folder_references">
                 {{ labels.archive_folder_references }}:
                 <template v-for="(reference, i) in item.archive_folder_references" :key="i">
                     <template v-if="i">, </template>
