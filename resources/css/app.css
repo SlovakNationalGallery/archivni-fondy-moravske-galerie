@@ -9,3 +9,40 @@
         --slider-handle-ring-color: rgba(0, 0, 0, .2);
     }
 }
+
+#zoom button {
+    @apply opacity-60;
+}
+
+#zoom button:hover {
+    @apply opacity-100;
+}
+
+/* referencestrip container */
+#zoom .openseadragon-container > .openseadragon-canvas + div {
+    @apply left-auto right-10 top-[4.5rem] !important;
+}
+
+#zoom .referencestrip {
+    @apply bg-transparent outline-none !important;
+}
+
+#zoom .referencestrip > div {
+    @apply bg-white/80 !important;
+}
+
+#zoom #viewer {
+    @apply absolute inset-0;
+}
+
+#zoom #viewer [data-current-page] {
+    @apply border-1 border-black border-solid !important;
+}
+
+#zoom #toolbar {
+    @apply !absolute m-5 right-0 top-0;
+}
+
+#zoom #toolbar button {
+    @apply align-middle ml-1.5 py-1 px-2 text-[1.125rem];
+}

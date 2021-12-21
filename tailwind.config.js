@@ -6,6 +6,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      borderWidth: {
+        '1': '1px',
+      },
       fontSize: {
         'sm': ['.875rem', {
           lineHeight: 1.2,

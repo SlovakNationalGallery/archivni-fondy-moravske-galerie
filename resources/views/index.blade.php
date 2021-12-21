@@ -7,11 +7,12 @@
         <link href="{{ mix('css/app.css') }}" rel="stylesheet">
         <title>Archivní fondy Moravské galerie</title>
     </head>
-    <body class="antialias h-full text-base">
+    <body class="antialias bg-white h-full text-base">
         <noscript>
             <strong>We're sorry but this site doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
         </noscript>
         <div class="h-full" id="app"></div>
         <script src="{{ mix('/js/app.js') }}"></script>
+        <script src="https://kit.fontawesome.com/4fb26d6f5e.js" crossorigin="anonymous"></script>
     </body>
 </html>

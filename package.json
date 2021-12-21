@@ -16,11 +16,13 @@
         "laravel-mix": "^6.0.6",
         "lodash": "^4.17.19",
         "postcss": "^8.4.4",
+        "tailwind": "^2.4.1",
         "tailwindcss": "^3.0.0",
         "vue-loader": "^16.8.3"
     },
     "dependencies": {
         "@vueform/slider": "^2.0.8",
+        "openseadragon": "^3.0.0",
         "qs": "^6.10.1",
         "swiper": "^7.3.1",
         "vue": "^3.2.22",
