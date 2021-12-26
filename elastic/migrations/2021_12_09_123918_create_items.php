@@ -2,7 +2,6 @@
 declare(strict_types=1);
 
 use ElasticAdapter\Indices\Mapping;
-use ElasticAdapter\Indices\Settings;
 use ElasticMigrations\Facades\Index;
 use ElasticMigrations\MigrationInterface;
 
@@ -13,8 +12,10 @@ final class CreateItems implements MigrationInterface
      */
     public function up(): void
     {
-        Index::create('items', function (Mapping $mapping, Settings $settings) {
+        Index::createIfNotExists('items', function (Mapping $mapping) {
             $mapping
+                ->text('title')
+                ->text('description')
                 ->keyword('authors')
                 ->keyword('part_of')
                 ->keyword('institution')
@@ -33,6 +34,6 @@ final class CreateItems implements MigrationInterface
      */
     public function down(): void
     {
-        Index::drop('items');
+        Index::dropIfExists('items');
     }
 }

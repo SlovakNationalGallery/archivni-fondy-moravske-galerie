@@ -1,4 +1,9 @@
 <template>
+    <div class="my-2">
+        Search:
+        <input class="border-2 border-black p-2" type="text" :value="$route.query?.q" @input="search">
+    </div>
+
     <div class="-mx-2">
         <div class="flex flex-wrap -my-2">
             <div class="my-2 px-2 w-full lg:w-1/2" v-for="(filterOptions, key) in options.filter" :key="key">
@@ -76,9 +81,9 @@ export default {
         this.update()
     },
     methods: {
-        randomHeight() {
-            const items = ['200', '300', '400', '500', '600', '700'];
-            return items[Math.floor(Math.random() * items.length)]
+        search(e) {
+            const query = _.merge(this.$route.query, { q: e.target.value })
+            this.$router.replace({ query, force: true })
         },
         facetUpdate(value, key) {
             const query = _.merge(this.$route.query, { filter: { [key]: value } })
