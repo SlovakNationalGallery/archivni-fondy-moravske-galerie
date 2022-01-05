@@ -26,6 +26,8 @@
         v-model="yearRange"
         @update:modelValue="yearsUpdate" />
 
+        <div v-if="total">{{ total }} děl</div>
+
         <div class="-mx-2" item-selector="[data-masonry-tile]" transition-duration="0" v-masonry="masonry">
             <div class="flex flex-wrap mb-10">
                 <div v-masonry-tile class="px-2 py-4 w-1/2 lg:w-1/4" v-for="(item, i) in items" :key="i" data-masonry-tile>
@@ -54,6 +56,7 @@ export default {
     components: { Facet, Layout, Slider },
     data() {
         return {
+            total: 0,
             yearRange: [],
             masonry: 'masonry',
             options: {
@@ -107,6 +110,7 @@ export default {
             params.set('size', 12)
             axios.get(`/api/items`, { params })
                 .then(({ data }) => {
+                this.total = data.meta.total
                 if (data.data.length) {
                     this.page += 1
                     this.items.push(...data.data)
