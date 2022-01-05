@@ -7,7 +7,7 @@
         <link href="{{ mix('css/app.css') }}" rel="stylesheet">
         <title>Archivní fondy Moravské galerie</title>
     </head>
-    <body class="antialias bg-white h-full text-base">
+    <body class="antialias bg-white font-sans h-full text-base">
         <noscript>
             <strong>We're sorry but this site doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
         </noscript>

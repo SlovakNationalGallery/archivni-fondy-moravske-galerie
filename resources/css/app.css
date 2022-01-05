@@ -8,6 +8,22 @@
         --slider-tooltip-bg: black;
         --slider-handle-ring-color: rgba(0, 0, 0, .2);
     }
+
+    @font-face {
+        font-family: 'kolektiv_grotesk';
+        src: url('../fonts/kolektiv-grotesk/kolektiv_grotesk_ii_r.woff2') format('woff2'),
+             url('../fonts/kolektiv-grotesk/kolektiv_grotesk_ii_r.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    @font-face {
+        font-family: 'kolektiv_grotesk';
+        src: url('../fonts/kolektiv-grotesk/kolektiv_grotesk_ii_b.woff2') format('woff2'),
+             url('../fonts/kolektiv-grotesk/kolektiv_grotesk_ii_b.woff') format('woff');
+        font-weight: bold;
+        font-style: normal;
+    }
 }
 
 #zoom button {

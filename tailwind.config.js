@@ -9,6 +9,9 @@ module.exports = {
       borderWidth: {
         '1': '1px',
       },
+      fontFamily: {
+        'sans': ['kolektiv_grotesk'],
+      },
       fontSize: {
         'sm': ['.875rem', {
           lineHeight: 1.2,
