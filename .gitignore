@@ -4,6 +4,7 @@
 /public/hot
 /public/js
 /public/storage
+/resources/fonts
 /storage/media-library
 /storage/*.key
 /vendor

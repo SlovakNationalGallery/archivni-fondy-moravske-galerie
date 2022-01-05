@@ -19,6 +19,7 @@ set('git_tty', true);
 add('shared_files', [
 ]);
 add('shared_dirs', [
+    'resources/fonts',
 ]);
 
 // Writable dirs by web server 
