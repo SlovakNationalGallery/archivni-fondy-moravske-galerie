@@ -9,6 +9,22 @@
                 </router-link>
             </div>
 
+            <swiper
+            @imagesReady="swiperTo(0)"
+            @swiper="setSwiper"
+            class="my-4"
+            slidesPerView="auto">
+                <swiper-slide class="!w-auto" v-for="(image_url, i) in item.image_urls" :key="i">
+                    <img class="h-40" :src="image_url" />
+                </swiper-slide>
+            </swiper>
+
+            <div class="flex justify-between my-4">
+                <span class="cursor-pointer underline hover:no-underline" @click="swiperPrev">Prev</span>
+                <span>{{ swiper?.realIndex + 1 }}/{{ swiper?.slides?.length }}</span>
+                <span class="cursor-pointer underline hover:no-underline" @click="swiperNext">Next</span>
+            </div>
+
             <div class="my-4">
                 <p v-for="attribute in attributes.filter(key => item[key])" :key="attribute">
                     {{ labels[attribute] }}: {{ item[attribute] }}
@@ -45,22 +61,6 @@
             <p class="my-4 whitespace-pre-wrap">
                 {{ item.description }}
             </p>
-
-            <swiper
-            @imagesReady="swiperTo(0)"
-            @swiper="setSwiper"
-            class="my-4"
-            slidesPerView="auto">
-                <swiper-slide class="!w-auto" v-for="(image_url, i) in item.image_urls" :key="i">
-                    <img class="h-40" :src="image_url" />
-                </swiper-slide>
-            </swiper>
-
-            <div class="flex justify-between my-4">
-                <span class="cursor-pointer underline hover:no-underline" @click="swiperPrev">Prev</span>
-                <span>{{ swiper?.realIndex + 1 }}/{{ swiper?.slides?.length }}</span>
-                <span class="cursor-pointer underline hover:no-underline" @click="swiperNext">Next</span>
-            </div>
         </div>
     </layout>
 </template>
