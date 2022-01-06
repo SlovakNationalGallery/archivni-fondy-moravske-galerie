@@ -2,7 +2,7 @@
     <layout>
         <div class="max-w-screen-xl mx-auto px-16">
             <div class="max-w-2xl">
-                <h2 class="max-w-xl mt-12 text-4xl">Digitální archiv obrazárny moravského zemského muzea</h2>
+                <h2 class="max-w-xl mt-12 text-4xl">Digitální archiv Obrazárny Moravského zemského muzea</h2>
 
                 <div class="mb-24 text-xl">
                     <p class="mt-4">Specializovaná veřejná databáze vznikla v rámci Programu na podporu aplikovaného výzkumu a vývoje národní a kulturní identity na léta 2016 až 2022 (NAKI II) – projekt Moravská zemská obrazárna – tradice, reprezentace, identifikace (identifikační kód projektu: DG20P02OVV026; příjemce účelové podpory: Moravská galerie v Brně).</p>
