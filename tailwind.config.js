@@ -9,6 +9,9 @@ module.exports = {
       borderWidth: {
         '1': '1px',
       },
+      boxShadow: {
+        'input': '0 0 1em 0 var(--tw-shadow-color)',
+      },
       fontFamily: {
         'sans': ['kolektiv_grotesk'],
       },

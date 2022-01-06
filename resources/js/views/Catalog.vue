@@ -1,46 +1,49 @@
 <template>
     <layout>
-        <div class="my-2">
-            Search:
-            <input class="border-2 border-black p-2" type="text" :value="$route.query?.q" @input="search">
+        <template v-slot:search>
+            <input placeholder="hledej" class="block border-2 border-black p-2 w-full" type="text" :value="$route.query?.q" @input="search">
+        </template>
+
+        <div class="bg-gray-200 px-16 py-8">
+            <div class="-mx-2">
+                <div class="flex flex-wrap -my-2">
+                    <div class="my-2 px-2 w-full lg:w-1/3" v-for="(filterOptions, key) in options.filter" :key="key">
+                        <facet
+                        class="border-2 border-black"
+                        :label="labels[key]"
+                        :value="$route.query?.filter?.[key] ?? null"
+                        :options="filterOptions"
+                        @update="value => facetUpdate(value, key)" />
+                    </div>
+                </div>
+            </div>
+
+            <slider
+            class="mb-2 mt-14"
+            :min="options.minYear"
+            :max="options.maxYear"
+            v-if="yearRange[0] && yearRange[1]"
+            v-model="yearRange"
+            @update:modelValue="yearsUpdate" />
         </div>
 
-        <div class="-mx-2">
-            <div class="flex flex-wrap -my-2">
-                <div class="my-2 px-2 w-full lg:w-1/2" v-for="(filterOptions, key) in options.filter" :key="key">
-                    <facet
-                    class="border-2 border-black"
-                    :label="labels[key]"
-                    :value="$route.query?.filter?.[key] ?? null"
-                    :options="filterOptions"
-                    @update="value => facetUpdate(value, key)" />
+        <div class="px-16">
+            <div class="my-12 text-lg" v-if="total">{{ total }} děl</div>
+
+            <div class="-mx-2" item-selector="[data-masonry-tile]" transition-duration="0" v-masonry="masonry">
+                <div class="flex flex-wrap mb-10">
+                    <div v-masonry-tile class="px-2 py-4 w-1/2 lg:w-1/4" v-for="(item, i) in items" :key="i" data-masonry-tile>
+                        <router-link :to="{ name: 'detail', params: { id: item.id } }">
+                            <img @load="debouncedRedraw" class="w-full" :src="item.image_urls[0]" />
+                            <div class="mt-2">{{ item.title }}</div>
+                            <div class="mt-1">{{ item.dating }}</div>
+                        </router-link>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <slider
-        class="mb-4 mt-12"
-        :min="options.minYear"
-        :max="options.maxYear"
-        v-if="yearRange[0] && yearRange[1]"
-        v-model="yearRange"
-        @update:modelValue="yearsUpdate" />
-
-        <div v-if="total">{{ total }} děl</div>
-
-        <div class="-mx-2" item-selector="[data-masonry-tile]" transition-duration="0" v-masonry="masonry">
-            <div class="flex flex-wrap mb-10">
-                <div v-masonry-tile class="px-2 py-4 w-1/2 lg:w-1/4" v-for="(item, i) in items" :key="i" data-masonry-tile>
-                    <router-link :to="{ name: 'detail', params: { id: item.id } }">
-                        <img @load="debouncedRedraw" class="w-full" :src="item.image_urls[0]" />
-                        <div class="font-medium mt-1">{{ item.title }}</div>
-                        <div class="italic mt-1">{{ item.dating }}</div>
-                    </router-link>
-                </div>
-            </div>
-        </div>
     </layout>
-
 </template>
 
 <style src="@vueform/slider/themes/default.css"></style>
