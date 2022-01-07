@@ -9,7 +9,6 @@
                     <router-link class="underline hover:no-underline" :to="{ name: 'catalog', query: { filter: { part_of: item.part_of_2 } } }">{{ item.part_of_2 }}</router-link>
                 </p>
 
-
                 <div class="flex flex-wrap -mx-4">
                     <div class="px-4 lg:w-1/2">
                         <div v-if="item.image_urls.length">
@@ -18,20 +17,22 @@
                             </router-link>
                         </div>
 
-                        <swiper
-                        @imagesReady="swiperTo(0)"
-                        @swiper="setSwiper"
-                        class="my-4"
-                        slidesPerView="auto">
-                            <swiper-slide class="!w-auto" v-for="(image_url, i) in item.image_urls" :key="i">
-                                <img class="h-40" :src="image_url" />
-                            </swiper-slide>
-                        </swiper>
-                        <div class="flex justify-between my-4">
-                            <span class="cursor-pointer underline hover:no-underline" @click="swiperPrev">Prev</span>
-                            <span>{{ swiper?.realIndex + 1 }}/{{ swiper?.slides?.length }}</span>
-                            <span class="cursor-pointer underline hover:no-underline" @click="swiperNext">Next</span>
-                        </div>
+                        <template v-if="item.image_urls.length > 1">
+                            <swiper
+                            @imagesReady="swiperTo(0)"
+                            @swiper="setSwiper"
+                            class="my-4"
+                            slidesPerView="auto">
+                                <swiper-slide class="!w-auto" v-for="(image_url, i) in item.image_urls" :key="i">
+                                    <img class="h-40" :src="image_url" />
+                                </swiper-slide>
+                            </swiper>
+                            <div class="flex justify-between my-4">
+                                <span class="cursor-pointer underline hover:no-underline" @click="swiperPrev">Prev</span>
+                                <span>{{ swiper?.realIndex + 1 }}/{{ swiper?.slides?.length }}</span>
+                                <span class="cursor-pointer underline hover:no-underline" @click="swiperNext">Next</span>
+                            </div>
+                        </template>
                     </div>
 
                     <div class="px-4 lg:text-lg lg:w-1/2">
