@@ -26,6 +26,7 @@
         <template v-slot:container>
             <div class="my-6 lg:my-8 text-lg" v-if="total">{{ total }} {{ totalLabel }}</div>
             <div class="my-6 lg:my-8 text-center text-lg" v-else-if="!loading">Nebyli nalezeny žádné záznamy</div>
+            <div class="my-6 lg:my-8" v-else><img class="mx-auto" src="/images/loader.svg"></div>
 
             <div class="-mx-2 -my-4" item-selector="[data-masonry-tile]" transition-duration="0" v-masonry="masonry">
                 <div class="flex flex-wrap mb-10">
