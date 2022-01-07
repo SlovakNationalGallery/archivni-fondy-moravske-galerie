@@ -5,7 +5,7 @@
                 <div class="flex flex-wrap items-center justify-between max-w-screen-xl mx-auto my-3 lg:my-6">
                     <div class="mx-2 max-w-full">
                         <router-link class="block" to="/documents">
-                            <img class="h-[4rem] w-full" src="/images/logo.svg" alt="Logo" >
+                            <img class="h-[4rem]" src="/images/logo.svg" alt="Logo" >
                         </router-link>
                     </div>
 
