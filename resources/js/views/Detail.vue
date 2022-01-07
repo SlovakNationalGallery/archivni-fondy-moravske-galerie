@@ -67,6 +67,9 @@
                     </div>
                 </div>
             </div>
+            <div v-else>
+                <img class="mx-auto" src="/images/loader.svg">
+            </div>
         </template>
     </layout>
 </template>
@@ -109,10 +112,14 @@ export default {
     },
     methods: {
         fetch() {
-            axios.get(`/api/items/${this.$route.params.id}`, {
+            return axios.get(`/api/items/${this.$route.params.id}`, {
                 params: { page: this.page }
             }).then(({ data }) => {
                 this.item = data.data
+            }).catch(() => {
+                this.$router.push({
+                    name: 'catalog'
+                })
             })
         },
         setSwiper(swiper) {
