@@ -1,50 +1,43 @@
 <template>
     <layout>
-        <div class="max-w-screen-xl mx-auto px-16" v-if="item">
-            <h2 class="max-w-screen-md mt-6 mx-auto text-4xl text-center">{{ item.title }}</h2>
+        <template v-slot:container>
+            <div class="max-w-screen-xl mx-auto" v-if="item">
+                <h2 class="max-w-screen-md mt-6 mx-auto text-2xl lg:text-4xl text-center">{{ item.title }}</h2>
 
-            <p class="mb-12 mt-2 text-center text-lg" v-if="item.part_of_1 || item.part_of_2">
-                <router-link class="underline hover:no-underline" :to="{ name: 'catalog', query: { filter: { part_of: item.part_of_1 } } }">{{ item.part_of_1 }}</router-link><template v-if="item.part_of_1 && item.part_of_2">, </template>
-                <router-link class="underline hover:no-underline" :to="{ name: 'catalog', query: { filter: { part_of: item.part_of_2 } } }">{{ item.part_of_2 }}</router-link>
-            </p>
+                <p class="mb-6 lg:mb-12 mt-1 lg:mt-2 text-center lg:text-lg" v-if="item.part_of_1 || item.part_of_2">
+                    <router-link class="underline hover:no-underline" :to="{ name: 'catalog', query: { filter: { part_of: item.part_of_1 } } }">{{ item.part_of_1 }}</router-link><template v-if="item.part_of_1 && item.part_of_2">, </template>
+                    <router-link class="underline hover:no-underline" :to="{ name: 'catalog', query: { filter: { part_of: item.part_of_2 } } }">{{ item.part_of_2 }}</router-link>
+                </p>
 
 
-            <div class="flex">
-                <div class="w-1/2">
-                    <div v-if="item.image_urls.length">
-                        <router-link :to="{ name: 'zoom', id: item.id }">
-                            <img :src="item.image_urls[0]" :alt="item.title" class="mx-auto">
-                        </router-link>
+                <div class="flex flex-wrap -mx-4">
+                    <div class="px-4 lg:w-1/2">
+                        <div v-if="item.image_urls.length">
+                            <router-link :to="{ name: 'zoom', id: item.id }">
+                                <img :src="item.image_urls[0]" :alt="item.title" class="mx-auto">
+                            </router-link>
+                        </div>
+
+                        <swiper
+                        @imagesReady="swiperTo(0)"
+                        @swiper="setSwiper"
+                        class="my-4"
+                        slidesPerView="auto">
+                            <swiper-slide class="!w-auto" v-for="(image_url, i) in item.image_urls" :key="i">
+                                <img class="h-40" :src="image_url" />
+                            </swiper-slide>
+                        </swiper>
+                        <div class="flex justify-between my-4">
+                            <span class="cursor-pointer underline hover:no-underline" @click="swiperPrev">Prev</span>
+                            <span>{{ swiper?.realIndex + 1 }}/{{ swiper?.slides?.length }}</span>
+                            <span class="cursor-pointer underline hover:no-underline" @click="swiperNext">Next</span>
+                        </div>
                     </div>
 
-                    <swiper
-                    @imagesReady="swiperTo(0)"
-                    @swiper="setSwiper"
-                    class="my-4"
-                    slidesPerView="auto">
-                        <swiper-slide class="!w-auto" v-for="(image_url, i) in item.image_urls" :key="i">
-                            <img class="h-40" :src="image_url" />
-                        </swiper-slide>
-                    </swiper>
-                    <div class="flex justify-between my-4">
-                        <span class="cursor-pointer underline hover:no-underline" @click="swiperPrev">Prev</span>
-                        <span>{{ swiper?.realIndex + 1 }}/{{ swiper?.slides?.length }}</span>
-                        <span class="cursor-pointer underline hover:no-underline" @click="swiperNext">Next</span>
-                    </div>
-                </div>
-
-                <div class="text-lg w-1/2">
-
-                    <div>
+                    <div class="px-4 lg:text-lg lg:w-1/2">
                         <p v-for="attribute in attributes.filter(key => item[key])" :key="attribute">
                             {{ labels[attribute] }}: {{ item[attribute] }}
                         </p>
-
-                        <!-- <p v-if="item.part_of_1 || item.part_of_2">
-                            {{ labels.part_of }}:
-                            <router-link class="underline hover:no-underline" :to="{ name: 'catalog', query: { filter: { part_of: item.part_of_1 } } }">{{ item.part_of_1 }}</router-link><template v-if="item.part_of_1 && item.part_of_2">, </template>
-                            <router-link class="underline hover:no-underline" :to="{ name: 'catalog', query: { filter: { part_of: item.part_of_2 } } }">{{ item.part_of_2 }}</router-link>
-                        </p> -->
 
                         <p v-if="item.author || item.author_image">
                             {{ labels.authors }}:
@@ -66,16 +59,14 @@
                                 </router-link>
                             </template>
                         </p>
-                    </div>
 
-                    <p class="my-4 whitespace-pre-wrap">
-                        {{ item.description }}
-                    </p>
+                        <p class="my-4 whitespace-pre-wrap">
+                            {{ item.description }}
+                        </p>
+                    </div>
                 </div>
             </div>
-
-
-        </div>
+        </template>
     </layout>
 </template>
 
@@ -101,7 +92,6 @@ export default {
             ],
             swiper: null,
             labels: {
-                // part_of: 'Celek',
                 authors: 'Autor',
                 institution: 'Vlastník',
                 archive_fund: 'Fond',
