@@ -14,13 +14,17 @@ require('./bootstrap');
 const router = createRouter({
     history: createWebHistory(),
     routes: [{
-        path: '/',
-        component: Catalog,
-        name: 'catalog',
-    }, {
-        path: '/detail/:id',
-        component: Detail,
-        name: 'detail',
+        path: '/documents',
+        component: App,
+        children: [{
+            path: '',
+            component: Catalog,
+            name: 'catalog',
+        }, {
+            path: ':id',
+            component: Detail,
+            name: 'detail',
+        }]
     }, {
         path: '/zoom/:id',
         component: Zoom,
@@ -29,6 +33,11 @@ const router = createRouter({
         path: '/info',
         component: Info,
         name: 'info',
+    }, {
+        path: '/',
+        redirect: {
+            name: 'catalog'
+        }
     }],
     parseQuery: qs.parse,
     stringifyQuery(query) {

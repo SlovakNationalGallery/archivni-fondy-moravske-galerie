@@ -1,10 +1,6 @@
 <template>
     <layout>
-        <template v-slot:search>
-            <input placeholder="hledej" class="block border-2 border-black p-2 w-full" type="text" :value="$route.query?.q" @input="search">
-        </template>
-
-        <div class="bg-gray-200 px-16 py-8">
+        <div class="bg-gray-200 px-6 lg:px-16 py-8">
             <div class="-mx-2">
                 <div class="flex flex-wrap -my-2">
                     <div class="my-2 px-2 w-full lg:w-1/3" v-for="(filterOptions, key) in options.filter" :key="key">
@@ -19,7 +15,7 @@
             </div>
 
             <slider
-            class="mb-2 mt-14"
+            class="mb-2 mt-14 px-6 lg:px-0"
             :min="options.minYear"
             :max="options.maxYear"
             v-if="yearRange[0] && yearRange[1]"
@@ -27,10 +23,10 @@
             @update:modelValue="yearsUpdate" />
         </div>
 
-        <div class="px-16">
-            <div class="my-12 text-lg" v-if="total">{{ total }} děl</div>
+        <template v-slot:container>
+            <div class="my-6 lg:my-8 text-lg" v-if="total">{{ total }} děl</div>
 
-            <div class="-mx-2" item-selector="[data-masonry-tile]" transition-duration="0" v-masonry="masonry">
+            <div class="-mx-2 -my-4" item-selector="[data-masonry-tile]" transition-duration="0" v-masonry="masonry">
                 <div class="flex flex-wrap mb-10">
                     <div v-masonry-tile class="px-2 py-4 w-1/2 lg:w-1/4" v-for="(item, i) in items" :key="i" data-masonry-tile>
                         <router-link :to="{ name: 'detail', params: { id: item.id } }">
@@ -41,7 +37,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </template>
 
     </layout>
 </template>

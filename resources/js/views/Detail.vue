@@ -1,9 +1,9 @@
 <template>
     <layout>
         <div class="max-w-screen-xl mx-auto px-16" v-if="item">
-            <h2 class="mt-6 text-4xl text-center">{{ item.title }}</h2>
+            <h2 class="max-w-screen-md mt-6 mx-auto text-4xl text-center">{{ item.title }}</h2>
 
-            <p class="mb-12 text-center text-lg" v-if="item.part_of_1 || item.part_of_2">
+            <p class="mb-12 mt-2 text-center text-lg" v-if="item.part_of_1 || item.part_of_2">
                 <router-link class="underline hover:no-underline" :to="{ name: 'catalog', query: { filter: { part_of: item.part_of_1 } } }">{{ item.part_of_1 }}</router-link><template v-if="item.part_of_1 && item.part_of_2">, </template>
                 <router-link class="underline hover:no-underline" :to="{ name: 'catalog', query: { filter: { part_of: item.part_of_2 } } }">{{ item.part_of_2 }}</router-link>
             </p>
