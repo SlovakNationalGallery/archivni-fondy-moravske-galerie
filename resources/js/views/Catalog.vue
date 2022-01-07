@@ -25,7 +25,7 @@
 
         <template v-slot:container>
             <div class="my-6 lg:my-8 text-lg" v-if="total">{{ total }} {{ totalLabel }}</div>
-            <div class="my-6 lg:my-8 text-center text-lg" v-else>Nebyli nalezeny žádné záznamy</div>
+            <div class="my-6 lg:my-8 text-center text-lg" v-else-if="!loading">Nebyli nalezeny žádné záznamy</div>
 
             <div class="-mx-2 -my-4" item-selector="[data-masonry-tile]" transition-duration="0" v-masonry="masonry">
                 <div class="flex flex-wrap mb-10">
@@ -56,6 +56,7 @@ export default {
     components: { Facet, Layout, Slider },
     data() {
         return {
+            loading: true,
             total: 0,
             yearRange: [],
             masonry: 'masonry',
@@ -108,19 +109,23 @@ export default {
             const params = this.filterParams()
             params.set('page', this.page)
             params.set('size', 12)
-            axios.get(`/api/items`, { params })
+            return axios
+                .get(`/api/items`, { params })
                 .then(({ data }) => {
-                this.total = data.meta.total
-                if (data.data.length) {
-                    this.page += 1
-                    this.items.push(...data.data)
-                    this.$nextTick(() => {
-                        this.$redrawVueMasonry(this.masonry)
-                        const last = document.querySelector('[data-masonry-tile]:last-child')
-                        this.observer.observe(last)
-                    })
-                }
-            })
+                    this.total = data.meta.total
+                    this.loading = false
+                    if (data.data.length) {
+                        this.page += 1
+                        this.items.push(...data.data)
+                        this.$nextTick(() => {
+                            this.$redrawVueMasonry(this.masonry)
+                            const last = document.querySelector('[data-masonry-tile]:last-child')
+                            if (last) {
+                                this.observer.observe(last)
+                            }
+                        })
+                    }
+                })
         },
         filterParams() {
             const queryString = this.$router.options.stringifyQuery(this.$route.query)
@@ -159,11 +164,12 @@ export default {
                 })
         },
         update() {
+            this.loading = true
             this.page = 1
             this.items = []
             this.observer.disconnect()
-            this.fetchAggregations()
             this.fetchItems()
+            this.fetchAggregations()
             this.fetchYears()
         },
         observerCallback(entries) {
