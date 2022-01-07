@@ -89,6 +89,7 @@ class ItemImporter
         return $row
             ->intersectByKeys($this->map)
             ->mapWithKeys(function ($value, $key) {
+                $value = trim($value);
                 $mappedKey = $this->map[$key];
                 if ($value === '') {
                     return [$mappedKey => null];
