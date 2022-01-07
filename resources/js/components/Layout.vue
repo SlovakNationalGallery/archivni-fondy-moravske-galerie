@@ -11,7 +11,7 @@
                         </div>
 
                         <div class="mx-2 w-80">
-                            <input :value="$route.query?.q" placeholder="hledej" class="block border-2 border-black p-2 w-full focus:shadow-input focus:shadow-neutral-300 focus:outline-none" type="search" @search="search">
+                            <input :value="$route.query?.q" placeholder="hledej" class="block border-2 border-black p-2 rounded-none w-full focus:shadow-input focus:shadow-neutral-300 focus:outline-none" type="search" @search="search">
                         </div>
                     </div>
                 </div>
