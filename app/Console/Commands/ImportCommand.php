@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Import\CsvRepository;
 use App\Import\ItemImporter;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 
 class ImportCommand extends Command
 {
@@ -13,7 +14,7 @@ class ImportCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'import';
+    protected $signature = 'import {--f|force}';
 
     /**
      * The console command description.
@@ -40,9 +41,14 @@ class ImportCommand extends Command
     public function handle()
     {
         $importer = new ItemImporter(new CsvRepository());
-        $importer->importFile(
-            storage_path('app/import/data.csv'),
-            storage_path('app/import/images')
-        );
+        $csv = storage_path('app/import/data.csv');
+        $cached = Cache::get('data.mtime');
+        $mtime = filemtime($csv);
+        if ($cached !== $mtime || $this->option('force')) {
+            Cache::set('data.mtime', $mtime);
+            $importer->importFile($csv, storage_path('app/import/images'));
+        } else {
+            $this->output->writeln(sprintf('%s unchanged. Aborting...', $csv));
+        }
     }
 }
