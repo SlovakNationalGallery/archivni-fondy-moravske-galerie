@@ -14,9 +14,12 @@
 </template>
 
 <script>
+import { apiMixin } from '../mixins'
+
 import OpenSeadragon from 'openseadragon'
 
 export default {
+    mixins: [ apiMixin ],
     data() {
         return {
             item: null,
@@ -25,7 +28,7 @@ export default {
     mounted() {
         this.fetch(this.$route.params.id)
             .then(({ data }) => {
-                this.item = data.data
+                this.item = data
                 this.initViewer()
             })
     },
@@ -37,7 +40,7 @@ export default {
         },
         initViewer() {
             const tileSources = this.item.images
-                .map(image => `${process.env.MIX_IMAGES_HOST}/zoom/?path=${image}.dzi`)
+                .map(image => this.imageZoomUrl(image))
 
             const options = {
                 id: 'viewer',

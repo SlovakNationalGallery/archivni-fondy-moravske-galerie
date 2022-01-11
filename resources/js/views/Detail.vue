@@ -4,33 +4,34 @@
             <div class="max-w-screen-xl mx-auto" v-if="item">
                 <h2 class="max-w-screen-md mt-6 mx-auto text-2xl lg:text-4xl text-center">{{ item.title }}</h2>
 
-                <p class="mb-6 lg:mb-12 mt-1 lg:mt-2 text-center lg:text-lg" v-if="item.part_of_1 || item.part_of_2">
+                <p class="mt-1 lg:mt-2 text-center lg:text-lg" v-if="item.part_of_1 || item.part_of_2">
                     <router-link class="underline hover:no-underline" :to="{ name: 'catalog', query: { filter: { part_of: item.part_of_1 } } }">{{ item.part_of_1 }}</router-link><template v-if="item.part_of_1 && item.part_of_2">, </template>
                     <router-link class="underline hover:no-underline" :to="{ name: 'catalog', query: { filter: { part_of: item.part_of_2 } } }">{{ item.part_of_2 }}</router-link>
                 </p>
 
-                <div class="flex flex-wrap -mx-4">
+                <div class="flex flex-wrap -mx-4 mt-6 lg:mt-12">
                     <div class="px-4 lg:w-1/2">
-                        <div v-if="item.image_urls.length">
-                            <router-link :to="{ name: 'zoom', id: item.id }">
-                                <img :src="item.image_urls[0]" :alt="item.title" class="mx-auto">
+                        <div v-if="item.images.length">
+                            <router-link class="block relative" :to="{ name: 'zoom', id: item.id }">
+                                <img :src="imagePreviewUrl(item.images[currentImage], 800)" :alt="item.title" class="mx-auto">
+                                <span class="absolute bg-black/60 h-10 leading-10 rounded-full right-2 text-center text-white w-10 top-2"><i class="fa fa-search-plus" /></span>
                             </router-link>
                         </div>
 
-                        <template v-if="item.image_urls.length > 1">
-                            <swiper
-                            @imagesReady="swiperTo(0)"
-                            @swiper="setSwiper"
-                            class="my-4"
-                            slidesPerView="auto">
-                                <swiper-slide class="!w-auto" v-for="(image_url, i) in item.image_urls" :key="i">
-                                    <img class="h-40" :src="image_url" />
-                                </swiper-slide>
-                            </swiper>
-                            <div class="flex justify-between my-4">
-                                <span class="cursor-pointer underline hover:no-underline" @click="swiperPrev">Prev</span>
-                                <span>{{ swiper?.realIndex + 1 }}/{{ swiper?.slides?.length }}</span>
-                                <span class="cursor-pointer underline hover:no-underline" @click="swiperNext">Next</span>
+                        <template v-if="item.images.length > 1">
+                            <div class="relative">
+                                <swiper
+                                @imagesReady="swiperTo(0)"
+                                @swiper="setSwiper"
+                                class="my-4"
+                                slidesPerView="auto">
+                                    <swiper-slide class="pr-4 last:pr-0 !w-auto" v-for="(image, i) in item.images" :key="i">
+                                        <img class="cursor-pointer h-40" :src="imagePreviewUrl(image, 400)" @click="currentImage = i" />
+                                    </swiper-slide>
+                                </swiper>
+
+                                <div class="absolute bg-white/80 cursor-pointer h-10 leading-10 left-2 rounded-full text-center top-1/2 -translate-y-1/2 w-10 z-10" @click="swiperPrev"><i class="fa fa-arrow-left"></i></div>
+                                <div class="absolute bg-white/80 cursor-pointer h-10 leading-10 rounded-full right-2 text-center top-1/2 -translate-y-1/2 w-10 z-10" @click="swiperNext"><i class="fa fa-arrow-right"></i></div>
                             </div>
                         </template>
                     </div>
@@ -78,11 +79,14 @@
 import Layout from '../components/Layout.vue'
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import 'swiper/css';
+import { apiMixin } from '../mixins'
 
 export default {
+    mixins: [ apiMixin ],
     components: { Layout, Swiper, SwiperSlide },
     data() {
         return {
+            currentImage: 0,
             item: null,
             attributes: [
                 'dating',
@@ -115,7 +119,7 @@ export default {
             return axios.get(`/api/items/${this.$route.params.id}`, {
                 params: { page: this.page }
             }).then(({ data }) => {
-                this.item = data.data
+                this.item = data
             }).catch(() => {
                 this.$router.push({
                     name: 'catalog'

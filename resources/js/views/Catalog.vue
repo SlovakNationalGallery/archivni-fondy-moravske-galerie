@@ -25,14 +25,14 @@
 
         <template v-slot:container>
             <div class="my-6 lg:my-8 text-lg" v-if="total">{{ total }} {{ totalLabel }}</div>
-            <div class="my-6 lg:my-8 text-center text-lg" v-else-if="!loading">Nebyli nalezeny žádné záznamy</div>
+            <div class="my-6 lg:my-8 text-center text-lg" v-else-if="!loading">Nebyly nalezeny žádné záznamy</div>
             <div class="my-6 lg:my-8" v-else><img class="mx-auto" src="/images/loader.svg"></div>
 
             <div class="-mx-2 -my-4" item-selector="[data-masonry-tile]" transition-duration="0" v-masonry="masonry">
                 <div class="flex flex-wrap mb-10">
                     <div v-masonry-tile class="px-2 py-4 w-1/2 lg:w-1/4" v-for="(item, i) in items" :key="i" data-masonry-tile>
                         <router-link :to="{ name: 'detail', params: { id: item.id } }">
-                            <img @load="debouncedRedraw" class="w-full" :src="item.image_urls[0]" />
+                            <img @load="debouncedRedraw" class="w-full" :src="imagePreviewUrl(item.images[0], 400)" />
                             <div class="mt-2">{{ item.title }}</div>
                             <div class="mt-1">{{ item.dating }}</div>
                         </router-link>
@@ -52,8 +52,10 @@ import Layout from '../components/Layout.vue'
 import Slider from '@vueform/slider'
 import axios from 'axios'
 import _ from 'lodash'
+import { apiMixin } from '../mixins'
 
 export default {
+    mixins: [ apiMixin ],
     components: { Facet, Layout, Slider },
     data() {
         return {
@@ -113,7 +115,7 @@ export default {
             return axios
                 .get(`/api/items`, { params })
                 .then(({ data }) => {
-                    this.total = data.meta.total
+                    this.total = data.total
                     this.loading = false
                     if (data.data.length) {
                         this.page += 1
@@ -185,11 +187,11 @@ export default {
     computed: {
         totalLabel() {
             if (this.total === 1) {
-                return 'dílo'
+                return 'dokument'
             } else if (this.total >= 2 && this.total <= 4) {
-                return 'díla'
+                return 'dokumenty'
             } else {
-                return 'děl'
+                return 'dokumentů'
             }
         }
     },

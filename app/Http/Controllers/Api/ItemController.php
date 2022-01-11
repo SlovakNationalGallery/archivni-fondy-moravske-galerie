@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Resources\ItemResource;
 use App\Models\Item;
 use ElasticAdapter\Search\Aggregation;
 use ElasticAdapter\Search\Bucket;
@@ -18,7 +17,7 @@ class ItemController
         $sort = (array)$request->get('sort');
         $size = (int)$request->get('size', 1);
         $q = (string)$request->get('q');
-    
+
         try {
             $builder = Query::bool();
             $this->searchQuery($q, $builder)
@@ -28,21 +27,21 @@ class ItemController
         } catch (QueryBuilderException $e) {
             $query = ['match_all' => new \stdClass];
         }
-    
+
         $searchRequest = Item::searchQuery($query);
-    
+
         collect($sort)
             ->only(Item::$sortables)
             ->intersect(['asc', 'desc'])
             ->each(function ($direction, $field) use ($searchRequest) {
                 $searchRequest->sort($field, $direction);
             });
-    
+
         $items = $searchRequest->paginate($size);
         $items->setCollection($items->models());
         $items->appends($request->query());
-    
-        return ItemResource::collection($items);
+
+        return $items;
     }
 
     protected function searchQuery($query, $builder)
@@ -81,7 +80,7 @@ class ItemController
 
         return $this;
     }
-    
+
     public function aggregations(Request $request)
     {
         $filter = (array)$request->get('filter');
@@ -90,7 +89,7 @@ class ItemController
         $max = (array)$request->get('max');
         $size = (int)$request->get('size', 1);
         $q = (string)$request->get('q');
-    
+
         try {
             $builder = Query::bool();
             $this->searchQuery($q, $builder)
@@ -100,9 +99,9 @@ class ItemController
         } catch (QueryBuilderException $e) {
             $query = ['match_all' => new \stdClass];
         }
-    
+
         $searchRequest = Item::searchQuery($query);
-    
+
         foreach ($terms as $agg => $field) {
             $searchRequest->aggregate($agg, [
                 'terms' => [
@@ -111,7 +110,7 @@ class ItemController
                 ]
             ]);
         }
-    
+
         foreach ($min as $agg => $field) {
             $searchRequest->aggregate($agg, [
                 'min' => [
@@ -119,7 +118,7 @@ class ItemController
                 ]
             ]);
         }
-    
+
         foreach ($max as $agg => $field) {
             $searchRequest->aggregate($agg, [
                 'max' => [
@@ -127,30 +126,29 @@ class ItemController
                 ]
             ]);
         }
-    
+
         $searchResult = $searchRequest->execute();
         return response()->json($searchResult->aggregations()->map(function (Aggregation $aggregation) {
             $raw = $aggregation->raw();
             if (array_key_exists('value', $raw)) {
                 return $raw['value'];
             }
-    
+
             return $aggregation->buckets()->mapWithKeys(function (Bucket $bucket) {
                 return [$bucket->key() => $bucket->docCount()];
             });
         }));
     }
-    
+
     public function detail(Request $request, $id)
     {
         $query = Query::ids()->values([(string)$id]);
         $items = Item::searchQuery($query)->execute();
-    
+
         if (!$items->total()) {
             abort(404);
         }
-    
-        $item = $items->models()->first();
-        return new ItemResource($item);
+
+        return $items->models()->first();
     }
 }

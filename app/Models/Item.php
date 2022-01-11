@@ -69,17 +69,4 @@ class Item extends Model implements HasMedia
             ->addMediaCollection('default')
             ->withResponsiveImages();
     }
-
-    public function getImageUrls($maxSize = 800)
-    {
-        return collect($this->images)
-            ->map(function ($image) use ($maxSize) {
-                return sprintf(
-                    '%s/preview/?path=%s&size=%d',
-                    config('images.host'),
-                    $image,
-                    $maxSize
-                );
-            });
-    }
 }
