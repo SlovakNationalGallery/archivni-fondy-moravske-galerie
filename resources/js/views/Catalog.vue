@@ -5,7 +5,6 @@
                 <div class="flex flex-wrap -my-2">
                     <div class="my-2 px-2 w-full lg:w-1/3" v-for="(filterOptions, key) in options.filter" :key="key">
                         <facet
-                        class="border-2 border-black"
                         :label="labels[key]"
                         :value="$route.query?.filter?.[key] ?? null"
                         :options="filterOptions"

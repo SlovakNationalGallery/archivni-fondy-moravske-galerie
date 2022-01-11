@@ -134,8 +134,11 @@ class ItemController
                 return $raw['value'];
             }
 
-            return $aggregation->buckets()->mapWithKeys(function (Bucket $bucket) {
-                return [$bucket->key() => $bucket->docCount()];
+            return $aggregation->buckets()->map(function (Bucket $bucket) {
+                return [
+                    'value' => $bucket->key(),
+                    'count' => $bucket->docCount(),
+                ];
             });
         }));
     }
