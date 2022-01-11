@@ -29,7 +29,7 @@
 
             <div class="-mx-2 -my-4" item-selector="[data-masonry-tile]" transition-duration="0" v-masonry="masonry">
                 <div class="flex flex-wrap mb-10">
-                    <div v-masonry-tile class="px-2 py-4 w-1/2 lg:w-1/4" v-for="(item, i) in items" :key="i" data-masonry-tile>
+                    <div v-masonry-tile class="px-2 py-4 w-1/2 lg:w-1/4 xl:w-1/5" v-for="(item, i) in items" :key="i" data-masonry-tile>
                         <router-link :to="{ name: 'detail', params: { id: item.id } }">
                             <img @load="debouncedRedraw" class="w-full" :src="imagePreviewUrl(item.images[0], 400)" />
                             <div class="mt-2">{{ item.title }}</div>
@@ -110,7 +110,7 @@ export default {
         fetchItems() {
             const params = this.filterParams()
             params.set('page', this.page)
-            params.set('size', 12)
+            params.set('size', 20)
             return axios
                 .get(`/api/items`, { params })
                 .then(({ data }) => {
