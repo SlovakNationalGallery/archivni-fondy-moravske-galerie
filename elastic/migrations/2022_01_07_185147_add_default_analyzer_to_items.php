@@ -17,7 +17,10 @@ final class AddDefaultAnalyzerToItems implements MigrationInterface
             $settings->analysis([
                 'analyzer' => [
                     'default' => [
-                        'filter' => [ 'asciifolding' ],
+                        'filter' => [
+                            'lowercase',
+                            'asciifolding',
+                        ],
                         'tokenizer' => 'standard',
                     ]
                 ]
