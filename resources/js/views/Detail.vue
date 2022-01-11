@@ -12,7 +12,7 @@
                 <div class="flex flex-wrap -mx-4 mt-6 lg:mt-12">
                     <div class="px-4 lg:w-1/2">
                         <div v-if="item.images.length">
-                            <router-link class="block relative" :to="{ name: 'zoom', id: item.id }">
+                            <router-link class="block relative" :to="{ name: 'zoom', id: item.id, query: { page: currentImage } }">
                                 <img :src="imagePreviewUrl(item.images[currentImage], 800)" :alt="item.title" class="mx-auto">
                                 <span class="absolute bg-black/60 h-10 leading-10 rounded-full right-2 text-center text-white w-10 top-2"><i class="fa fa-search-plus" /></span>
                             </router-link>
