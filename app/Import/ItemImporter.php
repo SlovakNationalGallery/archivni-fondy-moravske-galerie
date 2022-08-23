@@ -43,35 +43,21 @@ class ItemImporter
         $this->repository = $repository;
     }
 
-    public function importFile($file, $imageDir)
+    public function importFile($file)
     {
         $rows = $this->repository->getAll($file, $this->options);
         foreach ($rows as $row) {
             $data = $this->map(collect($row));
-            $images = Str::of($row['Idexace digitalizátu'])
-                ->explode(';')
-                ->map(function ($image) use ($imageDir) {
-                    return "$imageDir/$image";
-                });
-            $this->import($data, $images);
+            $this->import($data);
         }
     }
 
-    public function import(Collection $data, Collection $images)
+    public function import(Collection $data)
     {
         $conditions = $this->getConditions($data);
         $item = Item::where($conditions)->first() ?? new Item();
         $item->forceFill($data->toArray());
         $item->save();
-
-        // $item->clearMediaCollection();
-        // $images
-        //     ->filter(function ($image) { return is_file($image); })
-        //     ->each(function ($image) use ($item) {
-        //         $item->addMedia($image)
-        //             ->preservingOriginal()
-        //             ->toMediaCollection();
-        //     });
     }
 
     protected function getConditions(Collection $data)

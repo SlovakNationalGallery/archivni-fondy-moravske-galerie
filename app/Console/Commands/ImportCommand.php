@@ -14,7 +14,7 @@ class ImportCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'import {--f|force}';
+    protected $signature = 'import {file} {--f|force}';
 
     /**
      * The console command description.
@@ -24,16 +24,6 @@ class ImportCommand extends Command
     protected $description = 'Import items';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      *
      * @return int
@@ -41,12 +31,13 @@ class ImportCommand extends Command
     public function handle()
     {
         $importer = new ItemImporter(new CsvRepository());
-        $csv = storage_path('app/import/data.csv');
+        $file = $this->argument('file');
+        $csv = storage_path($file);
         $cached = Cache::get('data.mtime');
         $mtime = filemtime($csv);
         if ($cached !== $mtime || $this->option('force')) {
             Cache::set('data.mtime', $mtime);
-            $importer->importFile($csv, storage_path('app/import/images'));
+            $importer->importFile($csv);
         } else {
             $this->output->writeln(sprintf('%s unchanged. Aborting...', $csv));
         }
