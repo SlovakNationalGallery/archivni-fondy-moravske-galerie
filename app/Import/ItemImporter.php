@@ -66,7 +66,8 @@ class ItemImporter
             'archive_fund',
             'archive_box',
             'archive_folder',
-            'inventory_number'])
+            'inventory_number'
+        ])
             ->toArray();
     }
 
@@ -101,13 +102,15 @@ class ItemImporter
                     return null;
                 }
 
-                return sprintf('MGHQ/%s/%s/%s.jp2',
+                return sprintf(
+                    'MGHQ/%s/%s/%s.jp2',
                     $matches['folder'],
                     $matches['subfolder'],
                     $image,
                 );
             })
-            ->filter();
+            ->filter()
+            ->values();
     }
 
     protected function mapDateEarliest($dateEarliest)
@@ -124,8 +127,12 @@ class ItemImporter
     {
         return Str::of($dates)
             ->explode('-')
-            ->filter(function ($date) { return ctype_digit($date); })
-            ->map(function ($date) { return (int)$date; });
+            ->filter(function ($date) {
+                return ctype_digit($date);
+            })
+            ->map(function ($date) {
+                return (int)$date;
+            });
     }
 
     protected function mapArchiveFolderReferences($archiveFolderReferences)
