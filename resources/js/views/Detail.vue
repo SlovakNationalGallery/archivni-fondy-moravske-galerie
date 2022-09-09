@@ -99,6 +99,7 @@
 
                     <div class="px-4 lg:text-lg lg:w-1/2">
                         <p
+                            class="mb-1.5"
                             v-for="attribute in attributes.filter(
                                 (key) => item[key]
                             )"
@@ -107,7 +108,10 @@
                             {{ labels[attribute] }}: {{ item[attribute] }}
                         </p>
 
-                        <p v-if="item.author || item.author_image">
+                        <p
+                            class="mb-1.5"
+                            v-if="item.author || item.author_image"
+                        >
                             {{ labels.authors }}:
                             <router-link
                                 class="underline hover:no-underline"
@@ -134,6 +138,7 @@
                         </p>
 
                         <p
+                            class="mb-1.5"
                             v-for="filterable in filterables.filter(
                                 (key) => item[key]
                             )"
@@ -154,7 +159,7 @@
                             >
                         </p>
 
-                        <p v-if="item.archive_folder_references">
+                        <p class="mb-1.5" v-if="item.archive_folder_references">
                             {{ labels.archive_folder_references }}:
                             <template
                                 v-for="(
