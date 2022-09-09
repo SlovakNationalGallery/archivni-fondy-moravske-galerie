@@ -32,14 +32,15 @@ class ImportCommand extends Command
     {
         $importer = new ItemImporter(new CsvRepository());
         $file = $this->argument('file');
-        $csv = storage_path($file);
-        $cached = Cache::get('data.mtime');
-        $mtime = filemtime($csv);
+        $path = realpath($file);
+        $cacheKey = sprintf('%s.mtime', $path);
+        $cached = Cache::get($cacheKey);
+        $mtime = filemtime($path);
         if ($cached !== $mtime || $this->option('force')) {
-            Cache::set('data.mtime', $mtime);
-            $importer->importFile($csv);
+            $importer->importFile($path);
+            Cache::set($cacheKey, $mtime);
         } else {
-            $this->output->writeln(sprintf('%s unchanged. Aborting...', $csv));
+            $this->output->writeln(sprintf('%s unchanged. Aborting...', $path));
         }
     }
 }
