@@ -97,16 +97,15 @@ class ItemImporter
             ->explode(';')
             ->map(function ($image) {
                 $image = trim($image);
-                preg_match('/^(?<folder>[[:alnum:]]+)_(?<subfolder>[[:alnum:]]+)_(?<subsubfolder>[[:alnum:]]+)/', $image, $matches);
-                if (!isset($matches['folder'], $matches['subfolder'], $matches['subsubfolder'])) {
+                preg_match('/^(?<folder>[[:alnum:]]+)_(?<subfolder>[[:alnum:]]+)/', $image, $matches);
+                if (!isset($matches['folder'], $matches['subfolder'])) {
                     return null;
                 }
 
                 return sprintf(
-                    'MGHQ/%s/%s/%s/%s.jp2',
+                    'MGHQ/%s/%s/%s.jp2',
                     $matches['folder'],
                     $matches['subfolder'],
-                    $matches['subsubfolder'],
                     $image,
                 );
             })
