@@ -31,6 +31,7 @@ class ItemImporter
         'Typ dokumentu' => 'work_type',
         'Související' => 'archive_folder_references',
         'Idexace digitalizátu' => 'images',
+        'Entity (místa, jména)' => 'entities',
     ];
 
     protected $options = [
@@ -141,6 +142,15 @@ class ItemImporter
             ->explode(';')
             ->map(function ($archiveFolderReference) {
                 return trim($archiveFolderReference);
+            });
+    }
+
+    protected function mapEntities($entities)
+    {
+        return Str::of($entities)
+            ->explode(';')
+            ->map(function ($entity) {
+                return trim($entity);
             });
     }
 }

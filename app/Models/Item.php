@@ -18,6 +18,7 @@ class Item extends Model implements HasMedia
     protected $casts = [
         'archive_folder_references' => 'json',
         'images' => 'json',
+        'entities' => 'json',
     ];
 
     public static $filterables = [
@@ -28,6 +29,7 @@ class Item extends Model implements HasMedia
         'archive_box',
         'archive_folder',
         'work_type',
+        'entities',
     ];
 
     public static $rangeables = [
@@ -35,8 +37,7 @@ class Item extends Model implements HasMedia
         'date_latest',
     ];
 
-    public static $sortables = [
-    ];
+    public static $sortables = [];
 
     public function toSearchableArray()
     {

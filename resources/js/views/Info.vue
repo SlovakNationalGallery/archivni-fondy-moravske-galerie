@@ -38,14 +38,14 @@
                             dochovanými na jiných místech nebo dokonce in situ.
                         </p>
 
-                        <!-- <p class="mt-8 lg:mt-12">
+                        <p class="mt-8 lg:mt-12">
                             Vyrobil a spravuje
-                            <a
+                            <!--a
                                 class="underline hover:no-underline"
                                 href="https://lab.sng.sk/"
-                                >lab.SNG</a
-                            >
-                        </p> -->
+                            -->lab.SNG<!--/a
+                            -->
+                        </p>
                     </div>
                 </div>
             </div>

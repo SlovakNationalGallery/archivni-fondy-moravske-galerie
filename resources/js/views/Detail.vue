@@ -184,6 +184,29 @@
                             </template>
                         </p>
 
+                        <p class="mb-1.5" v-if="item.entities">
+                            {{ labels.entities }}:
+                            <template
+                                v-for="(entity, i) in item.entities"
+                                :key="i"
+                            >
+                                <template v-if="i">, </template>
+                                <router-link
+                                    :to="{
+                                        name: 'catalog',
+                                        query: {
+                                            filter: {
+                                                entities: entity,
+                                            },
+                                        },
+                                    }"
+                                    class="underline hover:no-underline"
+                                >
+                                    {{ entity }}
+                                </router-link>
+                            </template>
+                        </p>
+
                         <p class="my-4 whitespace-pre-wrap">
                             {{ item.description }}
                         </p>
@@ -228,6 +251,7 @@ export default {
                 work_type: "Dokument",
                 dating: "Datace",
                 archive_folder_references: "Související",
+                entities: "Entity (místa, jména)",
             },
         };
     },
@@ -242,6 +266,7 @@ export default {
                 })
                 .then(({ data }) => {
                     this.item = data;
+                    console.log(data);
                 })
                 .catch(() => {
                     this.$router.push({
