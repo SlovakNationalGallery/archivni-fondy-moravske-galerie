@@ -6,11 +6,21 @@ use App\Models\Item;
 use ElasticAdapter\Search\Aggregation;
 use ElasticAdapter\Search\Bucket;
 use ElasticScoutDriverPlus\Exceptions\QueryBuilderException;
+use ElasticScoutDriverPlus\Support\ModelScope;
 use ElasticScoutDriverPlus\Support\Query;
+use Elasticsearch\Client;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ItemController
 {
+    protected Client $elasticsearch;
+
+    public function __construct(Client $elasticsearch)
+    {
+        $this->elasticsearch = $elasticsearch;
+    }
+
     public function index(Request $request)
     {
         $filter = (array)$request->get('filter');
@@ -28,20 +38,37 @@ class ItemController
             $query = ['match_all' => new \stdClass];
         }
 
-        $searchRequest = Item::searchQuery($query);
+        $searchRequestBuilder = Item::searchQuery($query);
+
+        // elastic-scout-driver does not implement count method
+        $searchRequest = $searchRequestBuilder->buildSearchRequest();
+        $modelScope = new ModelScope(Item::class);
+        $indexName = $modelScope->resolveIndexNames()->join(',');
+        $countResponse = $this->elasticsearch->count([
+            'index' => $indexName,
+            'body' => $searchRequest->toArray(),
+        ]);
 
         collect($sort)
             ->only(Item::$sortables)
             ->intersect(['asc', 'desc'])
-            ->each(function ($direction, $field) use ($searchRequest) {
-                $searchRequest->sort($field, $direction);
+            ->each(function ($direction, $field) use ($searchRequestBuilder) {
+                $searchRequestBuilder->sort($field, $direction);
             });
 
-        $items = $searchRequest->paginate($size);
-        $items->setCollection($items->models());
-        $items->appends($request->query());
+        $page = $page ?? LengthAwarePaginator::resolveCurrentPage();
+        $items = $searchRequestBuilder
+            ->trackTotalHits(false)
+            ->from(($page - 1) * $size)
+            ->size($size)
+            ->execute();
 
-        return $items;
+        return new LengthAwarePaginator(
+            $items->models(),
+            $countResponse['count'],
+            $size,
+            $page
+        );
     }
 
     protected function searchQuery($query, $builder)
