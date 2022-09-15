@@ -12,26 +12,27 @@ class ItemImporter
     protected $repository;
 
     protected $map = [
-        'Název' => 'title',
-        'Obsah' => 'description',
-        'Autor_sb_předmětu' => 'author',
-        'Inv_číslo_MG' => 'inventory_number_mg',
-        'Datace' => 'dating',
-        'Rod_od' => 'date_earliest',
-        'Rok_do' => 'date_latest',
-        'Autor_snímku' => 'author_image',
-        'Celek 1' => 'part_of_1',
-        'Celek 2' => 'part_of_2',
-        'Vlastník' => 'institution',
-        'Fond' => 'archive_fund',
-        'Sbírka' => 'collection',
-        'Inv_číslo' => 'inventory_number',
-        'Karton' => 'archive_box',
-        'Složka ' => 'archive_folder',
-        'Typ dokumentu' => 'work_type',
-        'Související' => 'archive_folder_references',
-        'Idexace digitalizátu' => 'images',
-        'Entity (místa, jména)' => 'entities',
+        'title' => 'Název',
+        'description' => 'Obsah',
+        'author' => 'Autor_sb_předmětu',
+        'inventory_number_mg' => 'Inv_číslo_MG',
+        'dating' => 'Datace',
+        'date_earliest' => 'Rok_od',
+        'date_latest' => 'Rok_do',
+        'author_image' => 'Autor_snímku',
+        'part_of_1' => 'Celek 1',
+        'part_of_2' => 'Celek 2',
+        'institution' => 'Vlastník',
+        'archive_fund' => 'Fond',
+        'collection' => 'Sbírka',
+        'inventory_number' => 'Inv_číslo',
+        'archive_box' => 'Karton',
+        'archive_folder' => 'Složka',
+        'work_type' => 'Typ dokumentu',
+        'archive_folder_references' => 'Související',
+        'images' => 'Idexace digitalizátu',
+        'entities' => 'Entity (místa, jména)',
+        'unique_id' => 'Idexace digitalizátu',
     ];
 
     protected $options = [
@@ -63,33 +64,32 @@ class ItemImporter
 
     protected function getConditions(Collection $data)
     {
-        return $data->only([
-            'archive_fund',
-            'archive_box',
-            'archive_folder',
-            'inventory_number'
-        ])
-            ->toArray();
+        return $data->only('unique_id')->toArray();
     }
 
     protected function map(Collection $row)
     {
-        return $row
-            ->intersectByKeys($this->map)
-            ->mapWithKeys(function ($value, $key) {
-                $value = trim($value);
-                $mappedKey = $this->map[$key];
+        return collect($this->map)
+            ->map(function ($column, $mappedKey) use ($row) {
+                $value = trim($row[$column]);
                 if ($value === '') {
-                    return [$mappedKey => null];
+                    return null;
                 }
 
                 $methodName = sprintf('map%s', Str::camel($mappedKey));
                 if (method_exists($this, $methodName)) {
-                    $value = $this->$methodName($value);
+                    return $this->$methodName($value);
                 }
 
-                return [$mappedKey => $value];
+                return $value;
             });
+    }
+
+    protected function mapUniqueId($uniqueId)
+    {
+        return Str::of($uniqueId)
+            ->explode(';')
+            ->first();
     }
 
     protected function mapImages($images)
