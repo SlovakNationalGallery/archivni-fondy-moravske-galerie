@@ -9,9 +9,7 @@ use Illuminate\Support\Str;
 
 class ItemImporter
 {
-    protected $repository;
-
-    protected $map = [
+    public $map = [
         'title' => 'Název',
         'description' => 'Obsah',
         'author' => 'Autor_sb_předmětu',
@@ -35,10 +33,12 @@ class ItemImporter
         'unique_id' => 'Idexace digitalizátu',
     ];
 
-    protected $options = [
+    public $options = [
         'delimiter' => ';',
         'input_encoding' => 'CP1250',
     ];
+
+    protected $repository;
 
     public function __construct(CsvRepository $repository)
     {
@@ -62,12 +62,7 @@ class ItemImporter
         $item->save();
     }
 
-    protected function getConditions(Collection $data)
-    {
-        return $data->only('unique_id')->toArray();
-    }
-
-    protected function map(Collection $row)
+    public function map(Collection $row)
     {
         return collect($this->map)
             ->map(function ($column, $mappedKey) use ($row) {
@@ -85,14 +80,15 @@ class ItemImporter
             });
     }
 
-    protected function mapUniqueId($uniqueId)
+    public function mapUniqueId($uniqueId)
     {
         return Str::of($uniqueId)
             ->explode(';')
+            ->filter()
             ->first();
     }
 
-    protected function mapImages($images)
+    public function mapImages($images)
     {
         return Str::of($images)
             ->explode(';')
@@ -114,14 +110,32 @@ class ItemImporter
             ->values();
     }
 
-    protected function mapDateEarliest($dateEarliest)
+    public function mapDateEarliest($dateEarliest)
     {
         return $this->parseDates($dateEarliest)->first();
     }
 
-    protected function mapDateLatest($dateLatest)
+    public function mapDateLatest($dateLatest)
     {
         return $this->parseDates($dateLatest)->last();
+    }
+
+    public function mapArchiveFolderReferences($archiveFolderReferences)
+    {
+        return Str::of($archiveFolderReferences)
+            ->explode(';')
+            ->map(function ($archiveFolderReference) {
+                return trim($archiveFolderReference);
+            });
+    }
+
+    public function mapEntities($entities)
+    {
+        return Str::of($entities)
+            ->explode(';')
+            ->map(function ($entity) {
+                return trim($entity);
+            });
     }
 
     protected function parseDates($dates)
@@ -136,21 +150,8 @@ class ItemImporter
             });
     }
 
-    protected function mapArchiveFolderReferences($archiveFolderReferences)
+    protected function getConditions(Collection $data)
     {
-        return Str::of($archiveFolderReferences)
-            ->explode(';')
-            ->map(function ($archiveFolderReference) {
-                return trim($archiveFolderReference);
-            });
-    }
-
-    protected function mapEntities($entities)
-    {
-        return Str::of($entities)
-            ->explode(';')
-            ->map(function ($entity) {
-                return trim($entity);
-            });
+        return $data->only('unique_id')->toArray();
     }
 }
