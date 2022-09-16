@@ -62,17 +62,17 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    if (!("kiosk" in to.query) && "kiosk" in from.query) {
-        next({
-            ...to,
-            query: {
-                ...to.query,
-                kiosk: "",
-            },
-        });
+    if (false === "kiosk" in from.query || "kiosk" in to.query) {
+        next();
     }
 
-    next();
+    next({
+        ...to,
+        query: {
+            ...to.query,
+            kiosk: "",
+        },
+    });
 });
 
 const app = createApp(App).use(router).use(VueMasonryPlugin);
