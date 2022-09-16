@@ -1,60 +1,80 @@
-import { createApp } from 'vue'
-import { createRouter, createWebHistory } from 'vue-router'
-import { VueMasonryPlugin } from 'vue-masonry'
-import App from './App.vue'
-import Catalog from './views/Catalog.vue'
-import Detail from './views/Detail.vue'
-import Info from './views/Info.vue'
-import Zoom from './views/Zoom.vue'
-import qs from 'qs'
+import { createApp } from "vue";
+import { createRouter, createWebHistory } from "vue-router";
+import { VueMasonryPlugin } from "vue-masonry";
+import App from "./App.vue";
+import Catalog from "./views/Catalog.vue";
+import Detail from "./views/Detail.vue";
+import Info from "./views/Info.vue";
+import Zoom from "./views/Zoom.vue";
+import qs from "qs";
+import { update } from "lodash";
 
-
-require('./bootstrap');
+require("./bootstrap");
 
 const router = createRouter({
     history: createWebHistory(),
-    routes: [{
-        path: '/documents',
-        component: App,
-        children: [{
-            path: '',
-            component: Catalog,
-            name: 'catalog',
-        }, {
-            path: ':id',
-            component: Detail,
-            name: 'detail',
-        }]
-    }, {
-        path: '/zoom/:id',
-        component: Zoom,
-        name: 'zoom',
-    }, {
-        path: '/info',
-        component: Info,
-        name: 'info',
-    }, {
-        path: '/',
-        redirect: {
-            name: 'catalog'
-        }
-    }],
+    routes: [
+        {
+            path: "/documents",
+            component: App,
+            children: [
+                {
+                    path: "",
+                    component: Catalog,
+                    name: "catalog",
+                },
+                {
+                    path: ":id",
+                    component: Detail,
+                    name: "detail",
+                },
+            ],
+        },
+        {
+            path: "/zoom/:id",
+            component: Zoom,
+            name: "zoom",
+        },
+        {
+            path: "/info",
+            component: Info,
+            name: "info",
+        },
+        {
+            path: "/",
+            redirect: {
+                name: "catalog",
+            },
+        },
+    ],
     parseQuery: qs.parse,
     stringifyQuery(query) {
         return qs.stringify(query, {
             filter: (prefix, value) => {
                 if (value === null) {
-                    return
+                    return;
                 }
-                return value
+                return value;
             },
-            encodeValuesOnly: true
-        })
+            encodeValuesOnly: true,
+        });
     },
-})
+});
 
-const app = createApp(App)
-    .use(router)
-    .use(VueMasonryPlugin)
+router.beforeEach((to, from, next) => {
+    if (!("kiosk" in to.query) && "kiosk" in from.query) {
+        next({
+            ...to,
+            query: {
+                ...to.query,
+                kiosk: "",
+            },
+        });
+    }
 
-app.mount('#app')
+    next();
+});
+
+const app = createApp(App).use(router).use(VueMasonryPlugin);
+
+app.mount("#app");

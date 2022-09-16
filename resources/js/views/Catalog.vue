@@ -1,6 +1,6 @@
 <template>
     <layout>
-        <div class="bg-gray-200 px-6 lg:px-16 py-8">
+        <div class="bg-gray-200 px-6 lg:px-16 py-8" v-if="!hideFilter">
             <div class="-mx-2">
                 <div class="flex flex-wrap -my-2">
                     <div
@@ -228,6 +228,9 @@ export default {
             } else {
                 return "dokumentů";
             }
+        },
+        hideFilter() {
+            return "kiosk" in this.$route.query;
         },
     },
     watch: {

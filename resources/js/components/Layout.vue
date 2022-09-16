@@ -1,5 +1,5 @@
 <template>
-    <header>
+    <header v-if="!hideHeader">
         <div class="px-6 lg:px-16">
             <div class="max-w-screen-xl mx-auto">
                 <div
@@ -70,6 +70,11 @@ export default {
                 name: "catalog",
                 query: { q },
             });
+        },
+    },
+    computed: {
+        hideHeader() {
+            return "kiosk" in this.$route.query;
         },
     },
 };
