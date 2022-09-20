@@ -2,7 +2,7 @@
     <div id="zoom">
         <div
             id="viewer"
-            class="absolute h-full left-0 m-0 min-h-full p-0 top-0 w-full"
+            class="absolute h-full left-0 m-0 min-h-full p-0 pb-16 top-0 w-full"
         ></div>
         <div id="toolbar" class="absolute m-5 right-0 text-right top-0">
             <button aria-label="Zoom in" id="zoom-in">
