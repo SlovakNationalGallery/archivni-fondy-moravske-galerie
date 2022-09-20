@@ -1,7 +1,7 @@
 <template>
     <layout>
         <template v-slot:container>
-            <div class="max-w-screen-xl mx-auto" v-if="item">
+            <div class="isolate max-w-screen-xl mx-auto" v-if="item">
                 <h2
                     class="max-w-screen-md mt-6 mx-auto text-2xl lg:text-4xl text-center"
                 >
@@ -218,9 +218,17 @@
             </div>
         </template>
     </layout>
+
+    <div class="bg-gray-200 bottom-0 fixed px-6 py-2 w-full">
+        <BackButton
+            class="border-black border-1 bg-white px-4 py-3"
+            :fallback="{ name: 'catalog' }"
+        />
+    </div>
 </template>
 
 <script>
+import BackButton from "../components/BackButton.vue";
 import Layout from "../components/Layout.vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import "swiper/css";
@@ -228,7 +236,7 @@ import { apiMixin } from "../mixins";
 
 export default {
     mixins: [apiMixin],
-    components: { Layout, Swiper, SwiperSlide },
+    components: { BackButton, Layout, Swiper, SwiperSlide },
     data() {
         return {
             currentImage: 0,

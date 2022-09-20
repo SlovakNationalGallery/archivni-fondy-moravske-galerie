@@ -7,7 +7,6 @@ import Detail from "./views/Detail.vue";
 import Info from "./views/Info.vue";
 import Zoom from "./views/Zoom.vue";
 import qs from "qs";
-import { update } from "lodash";
 
 require("./bootstrap");
 
