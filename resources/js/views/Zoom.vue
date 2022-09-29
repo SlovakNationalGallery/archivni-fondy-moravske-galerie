@@ -53,7 +53,9 @@ export default {
     mounted() {
         this.fetch(this.$route.params.id).then(({ data }) => {
             this.item = data;
-            this.initViewer();
+            this.$nextTick(() => {
+                this.initViewer();
+            });
         });
     },
     methods: {
