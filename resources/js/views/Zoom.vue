@@ -2,7 +2,7 @@
     <div id="zoom">
         <div
             id="viewer"
-            class="absolute h-full left-0 m-0 min-h-full p-0 pb-16 top-0 w-full"
+            class="absolute h-full left-0 m-0 min-h-full p-0 top-0 w-full"
         ></div>
         <div id="toolbar" class="absolute m-5 right-0 text-right top-0">
             <button aria-label="Zoom in" id="zoom-in">
@@ -28,7 +28,7 @@
         </div>
     </div>
 
-    <div class="bg-gray-200 bottom-0 fixed px-6 py-2 w-full">
+    <div class="bottom-0 fixed px-6 py-2 w-full">
         <BackButton
             class="border-black border-1 bg-white px-4 py-3"
             :fallback="{ name: 'detail', params: { id: $route.params.id } }"
