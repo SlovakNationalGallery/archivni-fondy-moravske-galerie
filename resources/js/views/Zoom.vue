@@ -60,9 +60,12 @@ export default {
     },
     methods: {
         fetch() {
-            return axios.get(`/api/items/${this.$route.params.id}`, {
-                params: { page: this.page },
-            });
+            return axios.get(
+                `https://digitalni-archiv.moravska-galerie.cz/api/items/${this.$route.params.id}`,
+                {
+                    params: { page: this.page },
+                }
+            );
         },
         initViewer() {
             const tileSources = this.item.images.map((image) =>
@@ -92,7 +95,7 @@ export default {
 
             this.viewer = OpenSeadragon(options);
             this.$nextTick(() => {
-                this.viewer.referenceStrip.currentSelected.setAttribute(
+                this.viewer.referenceStrip?.currentSelected.setAttribute(
                     "data-current-page",
                     ""
                 );
