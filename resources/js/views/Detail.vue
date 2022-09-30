@@ -274,7 +274,6 @@ export default {
                 })
                 .then(({ data }) => {
                     this.item = data;
-                    console.log(data);
                 })
                 .catch(() => {
                     this.$router.push({

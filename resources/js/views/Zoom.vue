@@ -36,6 +36,16 @@
     </div>
 </template>
 
+<style>
+.openseadragon-container {
+    display: none;
+}
+
+.openseadragon-container:last-of-type {
+    display: block;
+}
+</style>
+
 <script>
 import BackButton from "../components/BackButton.vue";
 import { apiMixin } from "../mixins";
