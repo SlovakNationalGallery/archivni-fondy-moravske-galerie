@@ -10,6 +10,7 @@
         "babenkoivan/elastic-scout-driver": "^2.0",
         "babenkoivan/elastic-scout-driver-plus": "^3.1",
         "deployer/deployer": "^7.0",
+        "doctrine/dbal": "^3.7",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.65",
