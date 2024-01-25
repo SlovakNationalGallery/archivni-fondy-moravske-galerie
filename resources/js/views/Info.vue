@@ -18,7 +18,9 @@
                             podpory: Moravská galerie v Brně).
                         </p>
                         <p class="mt-4 lg:mt-6">
-                            Specializovaná veřejná databáze archivních a
+                            <strong>Digitální archiv Obrazárny Moravského
+                            zemského muzea (fondy OMZM I a OMZM II),</strong>
+                            specializovaná veřejná databáze archivních a
                             fotografických fondů Obrazárny Moravského zemského
                             muzea zpřístupňuje širokému okruhu zájemců
                             archiválie týkající se akvizic a dalších činností
@@ -36,6 +38,13 @@
                             konkrétními uměleckými díly nejen ze zkoumaného
                             historického sbírkového fondu, ale i dalšími
                             dochovanými na jiných místech nebo dokonce in situ.
+                        </p>
+                        <p class="mt-4 lg:mt-6">
+                            <strong>Fond Moravské uměleckoprůmyslové muzeum Brno</strong>
+                            byl digitalizován a zveřejněn za finanční podpory Evropské
+                            unie prostřednictvím Národního plánu obnovy a Ministerstva
+                            kultury iniciativy Digitalizace KKS – Digitalizace kulturních
+                            statků a národních kulturních památek I.
                         </p>
 
                         <p class="mt-8 lg:mt-12">
