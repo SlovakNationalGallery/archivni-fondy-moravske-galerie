@@ -5,6 +5,7 @@ require 'recipe/laravel.php';
 require 'contrib/npm.php';
 
 set('bin/php', 'php7.4');
+set('bin/composer', 'composer2');
 
 // Project name
 set('application', 'archivni-fondy-moravske-galerie');
@@ -13,16 +14,16 @@ set('application', 'archivni-fondy-moravske-galerie');
 set('repository', 'https://github.com/SlovakNationalGallery/archivni-fondy-moravske-galerie.git');
 
 // [Optional] Allocate tty for git clone. Default value is false.
-set('git_tty', true); 
+set('git_tty', true);
 
-// Shared files/dirs between deploys 
+// Shared files/dirs between deploys
 add('shared_files', [
 ]);
 add('shared_dirs', [
     'resources/fonts',
 ]);
 
-// Writable dirs by web server 
+// Writable dirs by web server
 add('writable_dirs', []);
 set('allow_anonymous_stats', false);
 
@@ -31,7 +32,7 @@ set('allow_anonymous_stats', false);
 host('lab_sng@webumenia.sk')
     ->set('deploy_path', '/var/www/afmg.webumenia.sk')
     ->set('user', 'lab_sng');
-    
+
 // Tasks
 
 task('build', function () {
