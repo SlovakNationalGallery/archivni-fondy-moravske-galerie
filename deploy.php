@@ -5,7 +5,6 @@ require 'recipe/laravel.php';
 require 'contrib/npm.php';
 
 set('bin/php', 'php7.4');
-set('bin/composer', 'composer2');
 
 // Project name
 set('application', 'archivni-fondy-moravske-galerie');
