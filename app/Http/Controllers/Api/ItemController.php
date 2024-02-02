@@ -46,7 +46,7 @@ class ItemController
         $indexName = $modelScope->resolveIndexNames()->join(',');
         $countResponse = $this->elasticsearch->count([
             'index' => $indexName,
-            'body' => $searchRequest->toArray(),
+            'body' => $searchRequest->toArray()['body'],
         ]);
 
         collect($sort)
