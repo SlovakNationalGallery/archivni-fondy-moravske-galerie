@@ -20,7 +20,8 @@ class Kernel extends ConsoleKernel
             '/home/mg/digitalni-archiv.moravska-galerie.cz/import/AMG_Negativy.csv',
             '/home/mg/digitalni-archiv.moravska-galerie.cz/import/AMG_OMZM I.csv',
             '/home/mg/digitalni-archiv.moravska-galerie.cz/import/AMZM_OMZM II.csv',
-        ])->everyMinute();
+            '/home/mg/digitalni-archiv.moravska-galerie.cz/import/AMG02.csv',
+        ])->daily();
     }
 
     /**
